@@ -75,7 +75,7 @@ public class Main extends Base {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            RecyclerView.Adapter cardAdapter = new CardAdapter(items, getApplicationContext());
+                            RecyclerView.Adapter cardAdapter = new CardAdapter(items, Main.this);
                             recyclerView.setAdapter(cardAdapter);
                         }
                     });

@@ -8,6 +8,10 @@
         android:label="@string/app_name"
         android:theme="@style/Theme.Dumpert">
         <activity
+            android:name="io.jari.dumpert.ViewItem"
+            android:label="Allah akbar">
+            </activity>
+        <activity
             android:name="io.jari.dumpert.Main"
             android:label="@string/app_name" >
             <intent-filter >

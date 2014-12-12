@@ -28,6 +28,8 @@ public class API {
             item.title = element.select("h1").first().text();
             item.description = element.select("p.description").first().text();
             item.thumbUrl = element.select("img").first().attr("src");
+            item.date = element.select("date").first().text();
+            item.stats = element.select("p.stats").first().text();
             item.photo = element.select(".foto").size() > 0;
             item.video = element.select(".video").size() > 0;
             if(item.video)

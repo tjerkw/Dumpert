@@ -1,18 +1,8 @@
 <resources>
 
-    <style name="Theme.Dumpert" parent="Theme.AppCompat.Light">
+    <style name="Theme.Dumpert" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="colorPrimary">@color/green</item>
         <item name="colorPrimaryDark">@color/green_accent</item>
         <item name="colorAccent">@color/green_accent</item>
-        <item name="actionBarStyle">@style/Theme.Dumpert.ABStyle</item>
     </style>
-
-    <style name="Theme.Dumpert.ABStyle" parent="@style/Widget.AppCompat.ActionBar.Solid">
-        <item name="titleTextStyle">@style/Theme.Dumpert.ABStyle.Title</item>
-    </style>
-
-    <style name="Theme.Dumpert.ABStyle.Title" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
-        <item name="android:textColor">@android:color/white</item>
-    </style>
-
 </resources>

@@ -1,5 +1,6 @@
 package io.jari.dumpert;
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -19,24 +20,35 @@ import org.w3c.dom.Text;
  */
 public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> {
     private Item[] dataSet;
-    private Context context;
+    private Activity context;
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public CardView cardView;
-        public Context context;
+        public Activity context;
+        public Item item;
 
-        public ViewHolder(CardView v, Context context) {
+        public ViewHolder(CardView v, final Activity context) {
             super(v);
             cardView = v;
             this.context = context;
+
+            v.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ViewItem.launch(ViewHolder.this.context, cardView.findViewById(R.id.card_image), item);
+                }
+            });
         }
 
         public void update(Item item) {
             ImageView imageView = (ImageView)cardView.findViewById(R.id.card_image);
             TextView title = (TextView)cardView.findViewById(R.id.card_title);
+            TextView description = (TextView)cardView.findViewById(R.id.card_description);
+            TextView stats = (TextView)cardView.findViewById(R.id.card_stats);
+            TextView date = (TextView)cardView.findViewById(R.id.card_date);
 
             Picasso
                     .with(context)
@@ -44,11 +56,15 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> {
                     .into(imageView);
 
             title.setText(item.title);
+            description.setText(item.description);
+            stats.setText(item.stats);
+            date.setText(item.date);
+            this.item = item;
         }
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public CardAdapter(Item[] dataSet, Context context) {
+    public CardAdapter(Item[] dataSet, Activity context) {
         this.dataSet = dataSet;
         this.context = context;
     }
