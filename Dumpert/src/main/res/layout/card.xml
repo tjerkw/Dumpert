@@ -20,13 +20,14 @@
         android:orientation="vertical">
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:id="@+id/card_frame">
             <ImageView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/card_image"
                 android:background="@color/gray_bg"
-                android:scaleType="fitXY"
+                android:scaleType="centerCrop"
                 android:minHeight="170dp"
                 android:maxHeight="170dp"/>
 

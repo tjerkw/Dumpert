@@ -13,13 +13,16 @@ import com.squareup.picasso.Picasso;
 import io.jari.dumpert.api.Item;
 import org.w3c.dom.Text;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 /**
  * JARI.IO
  * Date: 11-12-14
  * Time: 23:30
  */
 public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> {
-    private Item[] dataSet;
+    private ArrayList<Item> dataSet;
     private Activity context;
 
     // Provide a reference to the views for each data item
@@ -38,7 +41,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> {
             v.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ViewItem.launch(ViewHolder.this.context, cardView.findViewById(R.id.card_image), item);
+                    ViewItem.launch(ViewHolder.this.context, cardView.findViewById(R.id.card_frame), item);
                 }
             });
         }
@@ -65,8 +68,31 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> {
 
     // Provide a suitable constructor (depends on the kind of dataset)
     public CardAdapter(Item[] dataSet, Activity context) {
-        this.dataSet = dataSet;
+        this.dataSet = new ArrayList<Item>(Arrays.asList(dataSet));
         this.context = context;
+    }
+
+    public void removeAll() {
+        for (int i = dataSet.size()-1; i >= 0; i--) {
+            remove(dataSet.get(i));
+        }
+    }
+
+    public void add(Item item) {
+        dataSet.add(item);
+        notifyItemInserted(dataSet.size()-1);
+    }
+
+    public void addItems(Item[] items) {
+        for(Item item : items) {
+            add(item);
+        }
+    }
+
+    public void remove(Item item) {
+        int position = dataSet.indexOf(item);
+        dataSet.remove(position);
+        notifyItemRemoved(position);
     }
 
     // Create new views (invoked by the layout manager)
@@ -83,12 +109,12 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> {
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.update(dataSet[position]);
+        holder.update(dataSet.get(position));
     }
 
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-        return dataSet.length;
+        return dataSet.size();
     }
 }
