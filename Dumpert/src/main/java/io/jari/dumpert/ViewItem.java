@@ -2,6 +2,8 @@ package io.jari.dumpert;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -11,6 +13,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import com.nispok.snackbar.Snackbar;
 import com.squareup.picasso.Picasso;
 import io.jari.dumpert.api.API;
 import io.jari.dumpert.api.Item;
@@ -87,10 +90,24 @@ public class ViewItem extends Base {
         item = (Item)getIntent().getSerializableExtra("item");
         ViewCompat.setTransitionName(itemImage, "item");
 
-
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(item.title);
+
+        this.tip();
+    }
+
+    public void tip() {
+        if(!item.photo) return;
+        SharedPreferences sharedPreferences = getSharedPreferences("dumpert", 0);
+        if(!sharedPreferences.getBoolean("seenItemTip", false)) {
+            sharedPreferences.edit().putBoolean("seenItemTip", true).commit();
+
+            Snackbar.with(getApplicationContext())
+                    .text("TIP: Raak aan om te vergroten.")
+                    .actionLabel("Sluit")
+                    .actionColor(Color.parseColor("#66BB6A"))
+                    .duration(4000)
+                    .show(this);
+        }
     }
 
     public static void launch(Activity activity, View transitionView, Item item) {
