@@ -25,9 +25,6 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> {
     private ArrayList<Item> dataSet;
     private Activity context;
 
-    // Provide a reference to the views for each data item
-    // Complex data items may need more than one view per item, and
-    // you provide access to all the views for a data item in a view holder
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public CardView cardView;
         public Activity context;
@@ -41,7 +38,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> {
             v.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ViewItem.launch(ViewHolder.this.context, cardView.findViewById(R.id.card_frame), item);
+                    ViewItem.launch(ViewHolder.this.context, cardView.findViewById(R.id.card_image), item);
                 }
             });
         }
@@ -102,8 +99,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> {
         CardView card = (CardView)LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.card, parent, false);
 
-        ViewHolder viewHolder = new ViewHolder(card, context);
-        return viewHolder;
+        return new ViewHolder(card, context);
     }
 
     // Replace the contents of a view (invoked by the layout manager)

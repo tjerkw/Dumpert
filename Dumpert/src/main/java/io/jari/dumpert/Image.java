@@ -51,11 +51,11 @@ public class Image extends Base {
     public void tip() {
         SharedPreferences sharedPreferences = getSharedPreferences("dumpert", 0);
         if(!sharedPreferences.getBoolean("seenImageTip", false)) {
-            sharedPreferences.edit().putBoolean("seenImageTip", true).commit();
+            sharedPreferences.edit().putBoolean("seenImageTip", true).apply();
 
             Snackbar.with(getApplicationContext())
-                    .text("TIP: Je kan hier inzoomen.")
-                    .actionLabel("Sluit")
+                    .text(getResources().getText(R.string.tip_touch_to_enlarge))
+                    .actionLabel(getResources().getString(R.string.tip_close))
                     .actionColor(Color.parseColor("#D32F2F"))
                     .duration(4000)
                     .show(this);

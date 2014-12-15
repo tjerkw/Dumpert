@@ -2,9 +2,13 @@
 <resources>
 
     <string name="app_name">Dumpert</string>
-    <string name="title_activity_base">Base</string>
-    <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-    <string name="title_activity_main">Main</string>
+
+    <string name="tip_touch_to_enlarge">TIP: Touch to enlarge.</string>
+    <string name="tip_zoom">TIP: You can zoom in here.</string>
+    <string name="tip_close">Close</string>
+
+    <string name="tip_offline">You\'re in offline mode</string>
+    <string name="cached_version">cached version</string>
 
 </resources>

@@ -9,5 +9,5 @@ import java.io.Serializable;
  */
 public class ItemInfo implements Serializable {
     public String tabletVideo;
-
+    public String itemId;
 }

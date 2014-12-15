@@ -10,6 +10,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import com.nispok.snackbar.Snackbar;
+import com.nispok.snackbar.listeners.ActionClickListener;
+import com.nispok.snackbar.listeners.EventListener;
 import io.jari.dumpert.animators.SlideInOutBottomItemAnimator;
 import io.jari.dumpert.api.API;
 import io.jari.dumpert.api.Item;
@@ -81,6 +84,32 @@ public class Main extends Base {
         this.loadData(false);
     }
 
+    Snackbar offlineSnackbar;
+    boolean offlineSnackDismissed = false;
+    public void offlineSnack() {
+        if(offlineSnackDismissed) return;
+        if(Utils.isOffline(this)) {
+            getSupportActionBar().setSubtitle(R.string.cached_version);
+            if(offlineSnackbar != null && offlineSnackbar.isShowing()) offlineSnackbar.dismiss();
+
+            offlineSnackbar = Snackbar.with(this).text(getResources().getString(R.string.tip_offline))
+                    .duration(999999999)
+                    .animation(false)
+                    .swipeToDismiss(false)
+                    .actionLabel(R.string.tip_close)
+                    .actionListener(new ActionClickListener() {
+                        @Override
+                        public void onActionClicked(Snackbar snackbar) {
+                            offlineSnackDismissed = true;
+                        }
+                    });
+
+            offlineSnackbar.show(this);
+        } else {
+            getSupportActionBar().setSubtitle("");
+            if(offlineSnackbar != null && offlineSnackbar.isShowing()) offlineSnackbar.dismiss();
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -106,11 +135,12 @@ public class Main extends Base {
 
     CardAdapter cardAdapter;
     public void loadData(final boolean refresh) {
+        this.offlineSnack();
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    final Item[] items = API.getFrontpage();
+                    final Item[] items = API.getFrontpage(getApplicationContext());
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -135,11 +165,13 @@ public class Main extends Base {
     }
 
     public void addData(final Integer page) {
+        this.offlineSnack();
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    final Item[] items = API.getFrontpage(page);
+                    final Item[] items = API.getFrontpage(page, getApplicationContext());
+                    if(items.length == 0) Main.this.page--; //if API returned nothing, put page number back
                     loading = false;
                     runOnUiThread(new Runnable() {
                         @Override
