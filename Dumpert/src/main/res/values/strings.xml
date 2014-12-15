@@ -11,4 +11,7 @@
     <string name="tip_offline">You\'re in offline mode</string>
     <string name="cached_version">cached version</string>
 
+    <string name="comments_failed">Unable to load comments.</string>
+    <string name="video_failed">Unable to load video.</string>
+
 </resources>

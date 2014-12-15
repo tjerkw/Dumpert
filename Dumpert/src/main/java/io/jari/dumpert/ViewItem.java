@@ -70,17 +70,14 @@ public class ViewItem extends Base {
         ViewCompat.setTransitionName(comments, "item");
 
         getSupportActionBar().setTitle(item.title);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         this.tip();
     }
 
     public void startVideo(ItemInfo itemInfo) {
-//        final ProgressBar progressBar = (ProgressBar)findViewById(R.id.item_loading);
         final View cardFrame = findViewById(R.id.item_frame);
-//        cardFrame.setVisibility(View.GONE);
         final VideoView videoView = (VideoView) findViewById(R.id.item_video);
-//        videoView.setVisibility(View.VISIBLE);
 
         videoView.setVideoURI(Uri.parse(itemInfo.tabletVideo));
 
@@ -95,6 +92,22 @@ public class ViewItem extends Base {
                 Log.d("dumpert.viewitem", "onPrepared");
                 cardFrame.setVisibility(View.GONE);
                 videoView.setAlpha(1f);
+            }
+        });
+
+        videoView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+            @Override
+            public boolean onError(MediaPlayer mp, int what, int extra) {
+                findViewById(R.id.item_loading).setVisibility(View.GONE);
+                findViewById(R.id.item_type).setVisibility(View.VISIBLE);
+                videoView.setAlpha(0f);
+
+                Snackbar.with(ViewItem.this)
+                        .text(R.string.video_failed)
+                        .textColor(Color.parseColor("#FFCDD2"))
+                        .show(ViewItem.this);
+
+                return true;
             }
         });
 
@@ -125,6 +138,15 @@ public class ViewItem extends Base {
                     });
                 } catch (IOException e) {
                     e.printStackTrace();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Snackbar.with(ViewItem.this)
+                                    .text(R.string.comments_failed)
+                                    .textColor(Color.parseColor("#FFCDD2"))
+                                    .show(ViewItem.this);
+                        }
+                    });
                 }
             }
         }).start();

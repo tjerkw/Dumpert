@@ -7,6 +7,10 @@
     <string name="tip_touch_to_enlarge">TIP: Raak aan om te vergroten.</string>
     <string name="tip_zoom">TIP: Je kan hier inzoomen.</string>
     <string name="tip_close">Sluiten</string>
+    <string name="tip_offline">Je bent offline.</string>
     <string name="cached_version">cached version</string>
+
+    <string name="comments_failed">Reaguursels laden mislukt.</string>
+    <string name="video_failed">Video laden mislukt.</string>
 
 </resources>

@@ -2,6 +2,7 @@ package io.jari.dumpert;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.CardView;
@@ -13,6 +14,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import com.nispok.snackbar.Snackbar;
 import com.squareup.picasso.Picasso;
 import io.jari.dumpert.api.API;
 import io.jari.dumpert.api.Comment;
@@ -147,28 +149,35 @@ public class CommentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
+                        boolean error = false;
                         try {
-                            itemInfo = API.getItemInfo(item.url);
-
+                            if(!Utils.isOffline(activity))
+                                itemInfo = API.getItemInfo(item.url);
+                        } catch (Exception e) {
+                            error = true;
                             activity.runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-
-
-                                    if(true) { //preferences check goes here
-                                        ((ViewItem)activity).startVideo(itemInfo);
-                                    } else {
-                                        progressBar.setVisibility(View.GONE);
-                                        itemType.setVisibility(View.VISIBLE);
-                                    }
+                                    Snackbar.with(activity)
+                                            .text(R.string.video_failed)
+                                            .textColor(Color.parseColor("#FFCDD2"))
+                                            .show(activity);
                                 }
                             });
-
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        } catch (JSONException e) {
-                            e.printStackTrace();
                         }
+
+                        final boolean err = error;
+                        activity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if(!err && !Utils.isOffline(activity) && true) { //replace true with preference check
+                                    ((ViewItem)activity).startVideo(itemInfo);
+                                } else {
+                                    progressBar.setVisibility(View.GONE);
+                                    itemType.setVisibility(View.VISIBLE);
+                                }
+                            }
+                        });
                     }
                 }).start();
             }
