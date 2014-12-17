@@ -10,5 +10,6 @@ public class Comment {
     public String author;
     public String id;
     public String time;
-
+    public boolean best = false;
+    public Integer score;
 }

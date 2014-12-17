@@ -121,7 +121,7 @@ public class API {
         Elements elements = document.select("article");
         for(Element element : elements) {
             Comment comment = new Comment();
-            comment.id = element.attr("id");
+            comment.id = element.attr("id").substring(1);
             comment.content = element.select("p").first().html();
             String footer = element.select("footer").first().text();
             StringTokenizer tokenizer = new StringTokenizer(footer, "|");
@@ -130,8 +130,56 @@ public class API {
             comments.add(comment);
         }
 
-        Comment[] returnArr = new Comment[comments.size()];
-        comments.toArray(returnArr);
+        //modlinks
+        Pattern modlinksPattern = Pattern.compile("modscr\\.setAttribute\\('src','(.*)'\\)");
+        Matcher modlinksMatcher = modlinksPattern.matcher(file);
+        ArrayList<Comment>newComments = new ArrayList<Comment>();
+        if(modlinksMatcher.find()) {
+            String modlinksUrl = modlinksMatcher.group(1);
+            httpget = new HttpGet(modlinksUrl);
+            String modlinksFile = httpclient.execute(httpget, responseHandler);
+
+            //best comments
+            Pattern bestPattern = Pattern.compile("bestcomments = \\[(([0-9]+)(,\\s)?)+\\];");
+            Matcher bestMatcher = bestPattern.matcher(modlinksFile);
+            ArrayList<String> bestComments = new ArrayList<String>();
+            while(bestMatcher.find()) {
+                bestComments.add(bestMatcher.group(1));
+            }
+
+            //first loop adds best comments @ top
+            for(Comment comment: comments) {
+                if(bestComments.contains(comment.id)) {
+                    comment.best = true;
+                    newComments.add(comment);
+                }
+            }
+
+            //second loop adds the comments that aren't best
+            for(Comment comment: comments) {
+                if(!bestComments.contains(comment.id)) {
+                    newComments.add(comment);
+                }
+            }
+
+            //scores
+            Pattern scoresPattern = Pattern.compile("moderation\\['([0-9]*)'] = '(-?[0-9]*)';");
+            Matcher scoresMatcher = scoresPattern.matcher(modlinksFile);
+            while (scoresMatcher.find()) {
+                String id = scoresMatcher.group(1);
+                String score = scoresMatcher.group(2);
+                for(Comment comment: newComments) {
+                    if(comment.id.equals(id)) {
+                        Integer index = newComments.indexOf(comment);
+                        comment.score = Integer.parseInt(score);
+                        newComments.set(index, comment);
+                    }
+                }
+            }
+        }
+
+        Comment[] returnArr = new Comment[newComments.size()];
+        newComments.toArray(returnArr);
         return returnArr;
     }
 }

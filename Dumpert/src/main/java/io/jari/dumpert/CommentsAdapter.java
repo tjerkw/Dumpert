@@ -116,11 +116,20 @@ public class CommentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         public void update(Comment comment) {
             this.comment = comment;
+
+            TextView best = (TextView)view.findViewById(R.id.comment_best);
             TextView author = (TextView)view.findViewById(R.id.comment_author);
             TextView message = (TextView)view.findViewById(R.id.comment_message);
             TextView time = (TextView)view.findViewById(R.id.comment_time);
+            TextView score = (TextView)view.findViewById(R.id.comment_score);
 
+            if(comment.best)
+                view.setBackgroundResource(R.drawable.best_ripple);
+            else view.setBackgroundDrawable(activity.obtainStyledAttributes(new int[] { android.R.attr.selectableItemBackground}).getDrawable(0));
+
+            best.setVisibility(!comment.best ? View.GONE : View.VISIBLE);
             author.setText(comment.author);
+            score.setText(comment.score == null ? "" : Integer.toString(comment.score));
             message.setText(comment.content);
             time.setText(comment.time);
 

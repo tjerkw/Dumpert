@@ -2,9 +2,7 @@ package io.jari.dumpert;
 
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
@@ -12,7 +10,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.listeners.ActionClickListener;
-import com.nispok.snackbar.listeners.EventListener;
 import io.jari.dumpert.animators.SlideInOutBottomItemAnimator;
 import io.jari.dumpert.api.API;
 import io.jari.dumpert.api.Item;
@@ -26,7 +23,7 @@ public class Main extends Base {
     RecyclerView recyclerView;
 
     private boolean loading = false;
-    int pastVisiblesItems, visibleItemCount, totalItemCount;
+    int pastVisibleItems, visibleItemCount, totalItemCount;
     int page = 1;
 
     @Override
@@ -69,10 +66,10 @@ public class Main extends Base {
 
                 visibleItemCount = linearLayoutManager.getChildCount();
                 totalItemCount = linearLayoutManager.getItemCount();
-                pastVisiblesItems = linearLayoutManager.findFirstVisibleItemPosition();
+                pastVisibleItems = linearLayoutManager.findFirstVisibleItemPosition();
 
                 if (!loading) {
-                    if ( (visibleItemCount+pastVisiblesItems) >= totalItemCount) {
+                    if ( (visibleItemCount+ pastVisibleItems) >= totalItemCount) {
                         page++;
                         addData(page);
                         loading = true;
