@@ -14,17 +14,12 @@
  * limitations under the License.
  */
 
-package io.jari.dumpert.api;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
+package io.jari.dumpert.thirdparty;
 
 import android.util.Base64InputStream;
 import android.util.Base64OutputStream;
+
+import java.io.*;
 
 /**
  * Take an object and serialize and then save it to preferences

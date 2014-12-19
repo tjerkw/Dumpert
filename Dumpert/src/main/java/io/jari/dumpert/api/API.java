@@ -1,9 +1,9 @@
 package io.jari.dumpert.api;
 import android.content.Context;
-import android.net.Uri;
 import android.util.Base64;
 import android.util.Log;
 import io.jari.dumpert.Utils;
+import io.jari.dumpert.thirdparty.SerializeObject;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpGet;
@@ -18,7 +18,6 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;

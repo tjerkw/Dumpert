@@ -12,7 +12,6 @@ import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -26,11 +25,8 @@ import io.jari.dumpert.api.API;
 import io.jari.dumpert.api.Comment;
 import io.jari.dumpert.api.Item;
 import io.jari.dumpert.api.ItemInfo;
-import org.json.JSONException;
-import uk.co.senab.photoview.PhotoViewAttacher;
 
 import java.io.IOException;
-import java.net.URL;
 import java.security.InvalidParameterException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -66,8 +62,9 @@ public class ViewItem extends Base {
         comments.setLayoutManager(linearLayoutManager);
 
         this.loadComments();
+        this.initHeader();
 
-        ViewCompat.setTransitionName(comments, "item");
+        ViewCompat.setTransitionName(findViewById(R.id.item_frame), "item");
 
         getSupportActionBar().setTitle(item.title);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -78,6 +75,7 @@ public class ViewItem extends Base {
     public void startVideo(ItemInfo itemInfo) {
         final View cardFrame = findViewById(R.id.item_frame);
         final VideoView videoView = (VideoView) findViewById(R.id.item_video);
+        final View videoViewFrame = findViewById(R.id.item_video_frame);
 
         videoView.setVideoURI(Uri.parse(itemInfo.tabletVideo));
 
@@ -91,7 +89,7 @@ public class ViewItem extends Base {
             public void onPrepared(MediaPlayer mp) {
                 Log.d("dumpert.viewitem", "onPrepared");
                 cardFrame.setVisibility(View.GONE);
-                videoView.setAlpha(1f);
+                videoViewFrame.setAlpha(1f);
             }
         });
 
@@ -100,7 +98,7 @@ public class ViewItem extends Base {
             public boolean onError(MediaPlayer mp, int what, int extra) {
                 findViewById(R.id.item_loading).setVisibility(View.GONE);
                 findViewById(R.id.item_type).setVisibility(View.VISIBLE);
-                videoView.setAlpha(0f);
+                videoViewFrame.setAlpha(0f);
 
                 Snackbar.with(ViewItem.this)
                         .text(R.string.video_failed)
@@ -113,6 +111,70 @@ public class ViewItem extends Base {
 
 
         videoView.start();
+    }
+    
+    public void initHeader() {
+        final ImageView itemImage = (ImageView)findViewById(R.id.item_image);
+        item = (Item)getIntent().getSerializableExtra("item");
+        Picasso.with(this).load(item.imageUrl).into(itemImage);
+
+        final ImageView itemType = (ImageView)findViewById(R.id.item_type);
+        itemType.setImageDrawable(getResources().getDrawable(item.photo ? R.drawable.ic_photo : R.drawable.ic_play_circle_fill));
+
+        if(item.video) {
+            final ProgressBar progressBar = (ProgressBar)findViewById(R.id.item_loading);
+            progressBar.setVisibility(View.VISIBLE);
+            itemType.setVisibility(View.GONE);
+
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    boolean error = false;
+                    try {
+                        if(!Utils.isOffline(ViewItem.this))
+                            itemInfo = API.getItemInfo(item.url);
+                    } catch (Exception e) {
+                        error = true;
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Snackbar.with(ViewItem.this)
+                                        .text(R.string.video_failed)
+                                        .textColor(Color.parseColor("#FFCDD2"))
+                                        .show(ViewItem.this);
+                            }
+                        });
+                    }
+
+                    final boolean err = error;
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (!err && !Utils.isOffline(ViewItem.this) && true) { //replace true with preference check
+                                startVideo(itemInfo);
+                            } else {
+                                progressBar.setVisibility(View.GONE);
+                                itemType.setVisibility(View.VISIBLE);
+                            }
+                        }
+                    });
+                }
+            }).start();
+        }
+
+        item = (Item)getIntent().getSerializableExtra("item");
+        ViewCompat.setTransitionName(itemImage, "item");
+
+        itemImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(item.photo)
+                    Image.launch(ViewItem.this, itemImage, item.imageUrl);
+                else if(item.video && itemInfo != null) {
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(itemInfo.tabletVideo)));
+                }
+            }
+        });
     }
 
     public void loadComments() {

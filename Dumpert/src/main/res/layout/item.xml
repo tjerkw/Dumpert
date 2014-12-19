@@ -2,12 +2,12 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
               android:layout_width="match_parent"
-              android:layout_height="match_parent">
+              android:layout_height="200dp">
 
     <FrameLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="200dp"
         android:id="@+id/item_frame">
 
         <ImageView
@@ -38,12 +38,19 @@
 
     </FrameLayout>
 
-    <VideoView
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:background="@android:color/black"
+        android:id="@+id/item_video_frame"
+        android:alpha="0">
 
-        android:id="@+id/item_video"
-        android:minHeight="200dp"
-        android:alpha="0"/>
+        <VideoView
+            android:layout_gravity="center"
+            android:layout_width="fill_parent"
+            android:id="@+id/item_video"
+            android:layout_height="200dp"
+            />
+    </FrameLayout>
 
 </FrameLayout>

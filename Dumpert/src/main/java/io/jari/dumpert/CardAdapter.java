@@ -1,7 +1,6 @@
 package io.jari.dumpert;
 
 import android.app.Activity;
-import android.content.Context;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import io.jari.dumpert.api.Item;
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -63,7 +61,6 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> {
         }
     }
 
-    // Provide a suitable constructor (depends on the kind of dataset)
     public CardAdapter(Item[] dataSet, Activity context) {
         this.dataSet = new ArrayList<Item>(Arrays.asList(dataSet));
         this.context = context;
