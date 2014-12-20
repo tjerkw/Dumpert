@@ -10,9 +10,11 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.view.ViewCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.MediaController;
@@ -42,6 +44,7 @@ public class ViewItem extends Base {
     ItemInfo itemInfo;
     RecyclerView comments;
     CommentsAdapter commentsAdapter;
+    SwipeRefreshLayout swipeRefreshLayout;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,7 +64,7 @@ public class ViewItem extends Base {
         final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         comments.setLayoutManager(linearLayoutManager);
 
-        this.loadComments();
+        this.loadComments(false);
         this.initHeader();
 
         ViewCompat.setTransitionName(findViewById(R.id.item_frame), "item");
@@ -70,18 +73,56 @@ public class ViewItem extends Base {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         this.tip();
+
+        //set up ze refresh
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swiperefresh);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                swipeRefreshLayout.setRefreshing(true);
+                commentsAdapter.removeAll();
+                loadComments(true);
+            }
+        });
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(!item.video) {
+            super.onBackPressed();
+            return;
+        }
+        final VideoView videoView = (VideoView) findViewById(R.id.item_video);
+        videoView.suspend();
+        videoView.setVisibility(View.GONE); //paranoia
+        findViewById(R.id.item_video_frame).setVisibility(View.GONE);
+        findViewById(R.id.item_frame).setVisibility(View.VISIBLE);
+        findViewById(R.id.item_loading).setVisibility(View.GONE);
+        super.onBackPressed();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == android.R.id.home) {
+            this.onBackPressed();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     public void startVideo(ItemInfo itemInfo) {
         final View cardFrame = findViewById(R.id.item_frame);
-        final VideoView videoView = (VideoView) findViewById(R.id.item_video);
         final View videoViewFrame = findViewById(R.id.item_video_frame);
+        final VideoView videoView = (VideoView) findViewById(R.id.item_video);
 
         videoView.setVideoURI(Uri.parse(itemInfo.tabletVideo));
 
         MediaController mediaController = new MediaController(this);
 
-        mediaController.setAnchorView(videoView);
+        mediaController.setAnchorView(videoViewFrame);
         videoView.setMediaController(mediaController);
 
         videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
@@ -90,6 +131,7 @@ public class ViewItem extends Base {
                 Log.d("dumpert.viewitem", "onPrepared");
                 cardFrame.setVisibility(View.GONE);
                 videoViewFrame.setAlpha(1f);
+                ViewCompat.setTransitionName(videoViewFrame, "item");
             }
         });
 
@@ -177,9 +219,11 @@ public class ViewItem extends Base {
         });
     }
 
-    public void loadComments() {
-        commentsAdapter = new CommentsAdapter(new Comment[0], this);
-        comments.setAdapter(commentsAdapter);
+    public void loadComments(final boolean refresh) {
+        if(!refresh) {
+            commentsAdapter = new CommentsAdapter(new Comment[0], this);
+            comments.setAdapter(commentsAdapter);
+        }
 
         //get id from url
         Pattern pattern = Pattern.compile("/mediabase/([0-9]*)/([a-z0-9]*)/");
@@ -196,6 +240,7 @@ public class ViewItem extends Base {
                         @Override
                         public void run() {
                             commentsAdapter.addItems(commentsData);
+                            if(refresh) swipeRefreshLayout.setRefreshing(false);
                         }
                     });
                 } catch (IOException e) {
