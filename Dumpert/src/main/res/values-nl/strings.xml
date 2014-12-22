@@ -15,4 +15,6 @@
 
     <string name="best_comment">topreaguursel</string>
 
+    <string name="open_drawer">Open drawer</string>
+    <string name="close_drawer">Close drawer</string>
 </resources>

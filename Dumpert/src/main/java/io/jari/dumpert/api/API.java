@@ -42,10 +42,10 @@ public class API {
     }
 
     /**
-     * getFrontpage fetches the frontpage items and parses them into a Item array.
+     * getListing fetches a listing of items and parses them into a Item array.
      * Returns cache if in offline mode.
      */
-    public static Item[] getFrontpage(Integer page, Context context) throws IOException {
+    public static Item[] getListing(Integer page, Context context, String path) throws IOException {
         if(Utils.isOffline(context)) {
             Object cacheObj = API.getFromCache(context, "frontpage_"+page);
             //if no cached data present, return empty array
@@ -54,7 +54,7 @@ public class API {
                 return (Item[])cacheObj;
             }
         }
-        Document document = Jsoup.connect("http://www.dumpert.nl/" + ((page != 0) ? page : "")).get();
+        Document document = Jsoup.connect("http://www.dumpert.nl" + path + ((page != 0) ? page : "")).get();
         Elements elements = document.select(".dump-cnt .dumpthumb");
 
         ArrayList<Item> itemArrayList = new ArrayList<Item>();
@@ -89,8 +89,8 @@ public class API {
         return returnList;
     }
 
-    public static Item[] getFrontpage(Context context) throws IOException {
-        return API.getFrontpage(0, context);
+    public static Item[] getListing(Context context, String path) throws IOException {
+        return API.getListing(0, context, path);
     }
 
     public static ItemInfo getItemInfo(String url) throws IOException, JSONException {

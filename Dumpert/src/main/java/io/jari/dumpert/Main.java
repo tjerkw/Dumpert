@@ -1,8 +1,10 @@
 package io.jari.dumpert;
 
+import android.content.res.Configuration;
+import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.os.Bundle;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
@@ -20,7 +22,12 @@ import java.io.IOException;
 public class Main extends Base {
 
     DrawerLayout drawerLayout;
+    RecyclerView drawerRecyclerView;
     RecyclerView recyclerView;
+    ActionBarDrawerToggle actionBarDrawerToggle;
+    SwipeRefreshLayout swipeRefreshLayout;
+    String currentPath = "/";
+    NavigationAdapter navigationAdapter;
 
     private boolean loading = false;
     int pastVisibleItems, visibleItemCount, totalItemCount;
@@ -34,16 +41,17 @@ public class Main extends Base {
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_ab_drawer);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        this.drawerLayout = (DrawerLayout)this.findViewById(R.id.drawer_layout);
+        this.drawerLayout = (DrawerLayout) this.findViewById(R.id.drawer_layout);
         this.drawerLayout.setDrawerShadow(R.drawable.drawer_shadow, Gravity.START);
 
-        final SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swiperefresh);
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swiperefresh);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 swipeRefreshLayout.setRefreshing(true);
                 cardAdapter.removeAll();
-                loadData(true);
+                loadData(true, currentPath);
+                page = 0;
             }
         });
 
@@ -68,26 +76,117 @@ public class Main extends Base {
                 totalItemCount = linearLayoutManager.getItemCount();
                 pastVisibleItems = linearLayoutManager.findFirstVisibleItemPosition();
 
-                if (!loading) {
-                    if ( (visibleItemCount+ pastVisibleItems) >= totalItemCount) {
-                        page++;
-                        addData(page);
-                        loading = true;
-                    }
+                if (!loading && (visibleItemCount + pastVisibleItems) >= totalItemCount) {
+                    page++;
+                    addData(page, currentPath);
+                    loading = true;
                 }
             }
         });
 
-        this.loadData(false);
+        drawerRecyclerView = (RecyclerView) findViewById(R.id.left_drawer);
+        drawerRecyclerView.setHasFixedSize(true);
+
+        final LinearLayoutManager linearLayoutManager2 = new LinearLayoutManager(this);
+        drawerRecyclerView.setLayoutManager(linearLayoutManager2);
+
+        actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.open_drawer, R.string.close_drawer);
+
+        drawerLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                actionBarDrawerToggle.syncState();
+            }
+        });
+
+        drawerLayout.setDrawerListener(actionBarDrawerToggle);
+
+        this.populateNavigation();
+
+        currentPath = "/"; //load frontpage
+        this.loadData(false, currentPath);
+    }
+
+    public void populateNavigation() {
+        //nieuw
+        NavigationItem navigationItem = new NavigationItem();
+        navigationItem.title = "Nieuw";
+        navigationItem.drawable = getResources().getDrawable(R.drawable.ic_new_releases);
+        navigationItem.selected = true;
+        navigationItem.callback = new NavigationItemCallback() {
+            @Override
+            public void onClick(NavigationItem navigationItem) {
+                currentPath = "/";
+                super.onClick(navigationItem);
+            }
+        };
+
+        //toppers
+        NavigationItem navigationItemHot = new NavigationItem();
+        navigationItemHot.title = "Toppers";
+        navigationItemHot.drawable = getResources().getDrawable(R.drawable.ic_whatshot);
+        navigationItemHot.callback = new NavigationItemCallback() {
+            @Override
+            public void onClick(NavigationItem navigationItem) {
+                currentPath = "/toppers/";
+                super.onClick(navigationItem);
+            }
+        };
+
+        //plaatjes
+        NavigationItem navigationItemPlaatjes = new NavigationItem();
+        navigationItemPlaatjes.title = "Plaatjes";
+        navigationItemPlaatjes.drawable = getResources().getDrawable(R.drawable.ic_photo2);
+        navigationItemPlaatjes.callback = new NavigationItemCallback() {
+            @Override
+            public void onClick(NavigationItem navigationItem) {
+                currentPath = "/plaatjes/";
+                super.onClick(navigationItem);
+            }
+        };
+
+        //filmpjes
+        NavigationItem navigationItemVideos = new NavigationItem();
+        navigationItemVideos.title = "Video's";
+        navigationItemVideos.drawable = getResources().getDrawable(R.drawable.ic_play_circle_fill2);
+        navigationItemVideos.callback = new NavigationItemCallback() {
+            @Override
+            public void onClick(NavigationItem navigationItem) {
+                currentPath = "/filmpjes/";
+                super.onClick(navigationItem);
+            }
+        };
+
+        //audio
+        NavigationItem navigationItemAudio = new NavigationItem();
+        navigationItemAudio.title = "Audio";
+        navigationItemAudio.drawable = getResources().getDrawable(R.drawable.ic_volume_up);
+        navigationItemAudio.callback = new NavigationItemCallback() {
+            @Override
+            public void onClick(NavigationItem navigationItem) {
+                currentPath = "/audio/";
+                super.onClick(navigationItem);
+            }
+        };
+
+        navigationAdapter = new NavigationAdapter(new NavigationItem[] { navigationItem, navigationItemHot, navigationItemPlaatjes, navigationItemVideos, navigationItemAudio }, this);
+        drawerRecyclerView.setAdapter(navigationAdapter);
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        actionBarDrawerToggle.onConfigurationChanged(newConfig);
     }
 
     Snackbar offlineSnackbar;
     boolean offlineSnackDismissed = false;
+
     public void offlineSnack() {
-        if(offlineSnackDismissed) return;
-        if(Utils.isOffline(this)) {
+        if (offlineSnackDismissed) return;
+        if (Utils.isOffline(this)) {
             getSupportActionBar().setSubtitle(R.string.cached_version);
-            if(offlineSnackbar != null && offlineSnackbar.isShowing()) offlineSnackbar.dismiss();
+            if (offlineSnackbar != null && offlineSnackbar.isShowing()) offlineSnackbar.dismiss();
 
             offlineSnackbar = Snackbar.with(this).text(getResources().getString(R.string.tip_offline))
                     .duration(999999999)
@@ -104,7 +203,7 @@ public class Main extends Base {
             offlineSnackbar.show(this);
         } else {
             getSupportActionBar().setSubtitle("");
-            if(offlineSnackbar != null && offlineSnackbar.isShowing()) offlineSnackbar.dismiss();
+            if (offlineSnackbar != null && offlineSnackbar.isShowing()) offlineSnackbar.dismiss();
         }
     }
 
@@ -117,35 +216,25 @@ public class Main extends Base {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
+        return actionBarDrawerToggle.onOptionsItemSelected(item);
     }
 
     CardAdapter cardAdapter;
-    public void loadData(final boolean refresh) {
+
+    public void loadData(final boolean refresh, final String path) {
         this.offlineSnack();
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    final Item[] items = API.getFrontpage(getApplicationContext());
+                    final Item[] items = API.getListing(getApplicationContext(), path);
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             cardAdapter = new CardAdapter(new Item[0], Main.this);
                             recyclerView.setAdapter(cardAdapter);
 
-                            if(refresh) {
-                                final SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swiperefresh);
+                            if (refresh) {
                                 swipeRefreshLayout.setRefreshing(false);
                                 cardAdapter.removeAll();
                             }
@@ -161,14 +250,14 @@ public class Main extends Base {
         }).start();
     }
 
-    public void addData(final Integer page) {
+    public void addData(final Integer page, final String path) {
         this.offlineSnack();
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    final Item[] items = API.getFrontpage(page, getApplicationContext());
-                    if(items.length == 0) Main.this.page--; //if API returned nothing, put page number back
+                    final Item[] items = API.getListing(page, getApplicationContext(), path);
+                    if (items.length == 0) Main.this.page--; //if API returned nothing, put page number back
                     loading = false;
                     runOnUiThread(new Runnable() {
                         @Override
@@ -181,5 +270,17 @@ public class Main extends Base {
                 }
             }
         }).start();
+    }
+
+    public abstract class NavigationItemCallback {
+        public void onClick(NavigationItem navigationItem) {
+            navigationAdapter.setActive(navigationItem);
+            drawerLayout.closeDrawer(drawerRecyclerView);
+            swipeRefreshLayout.setRefreshing(true);
+            cardAdapter.removeAll();
+            page = 1;
+            loading = false;
+            loadData(true, currentPath);
+        }
     }
 }

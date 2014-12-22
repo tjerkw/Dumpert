@@ -241,6 +241,10 @@ public class ViewItem extends Base {
                         public void run() {
                             commentsAdapter.addItems(commentsData);
                             if(refresh) swipeRefreshLayout.setRefreshing(false);
+                            else {
+                                comments.setVisibility(View.VISIBLE);
+                                findViewById(R.id.comments_loader).setVisibility(View.GONE);
+                            }
                         }
                     });
                 } catch (IOException e) {
