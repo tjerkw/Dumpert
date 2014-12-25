@@ -46,11 +46,10 @@
         <Button
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="Onze website"
+            android:text="@string/about_button"
             android:id="@+id/button"
             android:textColor="@android:color/white"
             android:layout_marginTop="30dp"
-
-            android:background="@color/about_blue_button"/>
+            android:background="@drawable/button_bg"/>
     </LinearLayout>
 </FrameLayout>

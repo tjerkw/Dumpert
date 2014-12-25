@@ -1,7 +1,6 @@
 package io.jari.dumpert;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -9,13 +8,9 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.view.ViewCompat;
-import android.transition.Explode;
-import android.transition.Fade;
 import android.view.View;
-import android.view.Window;
 import android.widget.ImageView;
 import com.nispok.snackbar.Snackbar;
-import com.nispok.snackbar.listeners.ActionClickListener;
 import com.squareup.picasso.Picasso;
 import io.jari.dumpert.api.Item;
 import uk.co.senab.photoview.PhotoViewAttacher;
@@ -28,6 +23,26 @@ import uk.co.senab.photoview.PhotoViewAttacher;
 public class Image extends Base {
 
     Item item;
+
+    void setTheme() {
+        String theme = preferences.getString("theme", "green");
+
+        if(theme.equals("green")) {
+            //default theme, do nothing
+        } else if(theme.equals("blue")) {
+            super.setTheme(R.style.Theme_Dumpert_NoActionBar_Blue);
+        } else if(theme.equals("red")) {
+            super.setTheme(R.style.Theme_Dumpert_NoActionBar_Red);
+        } else if(theme.equals("pink")) {
+            super.setTheme(R.style.Theme_Dumpert_NoActionBar_Pink);
+        } else if(theme.equals("orange")) {
+            super.setTheme(R.style.Theme_Dumpert_NoActionBar_Orange);
+        } else if(theme.equals("bluegray")) {
+            super.setTheme(R.style.Theme_Dumpert_NoActionBar_BlueGray);
+        } else if(theme.equals("webartisans")) {
+            super.setTheme(R.style.Theme_Dumpert_NoActionBar_WebArtisans);
+        }
+    }
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

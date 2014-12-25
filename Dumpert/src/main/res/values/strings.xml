@@ -19,10 +19,33 @@
     <string name="open_drawer">Open drawer</string>
     <string name="close_drawer">Close drawer</string>
 
-    <string name="about_1stline">Deze app is gemaakt door WebArtisans.\nWij maken (native) android apps, handmade websites en meer voor een lage prijs.</string>
+    <string name="about_1stline">We\'re WebArtisans.\nWe have a passion for creating handmade websites and (native) android apps for a low price.</string>
+    <string name="about_button">Our website</string>
 
     <string name="general_settings">General settings</string>
     <string name="autoplay_vids">Play video\'s automatically</string>
     <string name="autoplay_vids_sum">With build-in videoplayer</string>
+
+    <string name="theme">Theme</string>
+
+    <string-array name="themes_values">
+        <item>green</item>
+        <item>blue</item>
+        <item>red</item>
+        <item>pink</item>
+        <item>orange</item>
+        <item>bluegray</item>
+        <item>webartisans</item>
+    </string-array>
+
+    <string-array name="themes">
+        <item>Green</item>
+        <item>Blue</item>
+        <item>Red</item>
+        <item>Pink</item>
+        <item>Orange</item>
+        <item>Blue Gray</item>
+        <item>WebArtisans</item>
+    </string-array>
 
 </resources>

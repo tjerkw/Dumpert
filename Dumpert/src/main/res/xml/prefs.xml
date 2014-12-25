@@ -6,5 +6,14 @@
             android:title="@string/autoplay_vids"
             android:summary="@string/autoplay_vids_sum"
             android:defaultValue="true"/>
+
+        <ListPreference
+            android:entries="@array/themes"
+            android:entryValues="@array/themes_values"
+            android:key="theme"
+            android:title="@string/theme"
+            android:summary="%s"
+            android:defaultValue="green"/>
     </PreferenceCategory>
+
 </PreferenceScreen>

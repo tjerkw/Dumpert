@@ -1,6 +1,8 @@
 package io.jari.dumpert;
 
 import android.app.Activity;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -59,16 +61,27 @@ public class NavigationAdapter extends RecyclerView.Adapter {
             TextView title = (TextView)view.findViewById(R.id.item_name);
             View divider = view.findViewById(R.id.divider);
             View layout = view.findViewById(R.id.item);
-            image.setImageDrawable(navigationItem.drawable);
+            Drawable drawable = navigationItem.drawable.mutate();
+
             title.setText(navigationItem.title);
 
-            if(navigationItem.selected)
+            int accent;
+            if(navigationItem.selected) {
+                accent = activity.obtainStyledAttributes(new int[]{R.attr.colorAccent}).getColor(0, 0xFF1D1D1D);
                 layout.setBackgroundResource(R.drawable.selected_ripple);
-            else layout.setBackgroundDrawable(activity.obtainStyledAttributes(new int[]{android.R.attr.selectableItemBackground}).getDrawable(0));
+            }
+            else {
+                accent = 0xFF1D1D1D;
+                layout.setBackgroundDrawable(activity.obtainStyledAttributes(new int[]{android.R.attr.selectableItemBackground}).getDrawable(0));
+            }
+            title.setTextColor(accent);
+            drawable.setColorFilter(accent, PorterDuff.Mode.SRC_IN);
 
             if(navigationItem.hasDivider)
                 divider.setVisibility(View.VISIBLE);
             else divider.setVisibility(View.GONE);
+
+            image.setImageDrawable(drawable);
 
             layout.setOnClickListener(new View.OnClickListener() {
                 @Override

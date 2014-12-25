@@ -108,7 +108,22 @@ public class Main extends Base {
 
         currentPath = "/"; //load frontpage
         this.loadData(false, currentPath);
+
+        if(preferences.getBoolean("switchtosettings", false)) {
+            preferences.edit().putBoolean("switchtosettings", false).apply();
+            switchToSettings(settingsNavItem);
+        }
     }
+
+    public void switchToSettings(NavigationItem navigationItem) {
+        drawerLayout.closeDrawer(drawerRecyclerView);
+        navigationAdapter.setActive(navigationItem);
+        FrameLayout preferences = (FrameLayout)findViewById(R.id.settings_frame);
+        preferences.setVisibility(View.VISIBLE);
+        getFragmentManager().beginTransaction().replace(R.id.settings_frame, new PreferencesFragment()).commit();
+    }
+
+    NavigationItem settingsNavItem;
 
     public void populateNavigation() {
         //nieuw
@@ -178,14 +193,11 @@ public class Main extends Base {
         navigationItemSettings.title = "Settings";
         navigationItemSettings.hasDivider = true;
         navigationItemSettings.drawable = getResources().getDrawable(R.drawable.ic_settings);
+        settingsNavItem = navigationItemSettings;
         navigationItemSettings.callback = new NavigationItemCallback() {
             @Override
             public void onClick(NavigationItem navigationItem) {
-                drawerLayout.closeDrawer(drawerRecyclerView);
-                navigationAdapter.setActive(navigationItem);
-                FrameLayout preferences = (FrameLayout)findViewById(R.id.settings_frame);
-                preferences.setVisibility(View.VISIBLE);
-                getFragmentManager().beginTransaction().replace(R.id.settings_frame, new PreferencesFragment()).commit();
+                switchToSettings(settingsNavItem);
             }
         };
 
