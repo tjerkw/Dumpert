@@ -36,6 +36,6 @@ public class Base extends ActionBarActivity{
 
         if(!dontApplyTheme) this.setTheme();
         super.onCreate(savedInstanceState);
-        if(!dontApplyTheme) this.setTheme(); // if we don't call it again here theme doesn't get properly acquired
+        if(!dontApplyTheme) this.setTheme(); // if we don't call it again here theme doesn't get properly acquired #justandroidthings
     }
 }

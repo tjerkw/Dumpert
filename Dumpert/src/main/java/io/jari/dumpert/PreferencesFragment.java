@@ -22,9 +22,10 @@ public class PreferencesFragment extends PreferenceFragment {
             public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
                 if (key.equals("theme")) {
                     Main main = (Main) getActivity();
-                    main.setTheme();
                     main.preferences.edit().putBoolean("switchtosettings", true).commit();
-                    main.recreate();
+                    main.finish();
+                    startActivity(main.getIntent());
+                    main.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                 }
             }
         };
