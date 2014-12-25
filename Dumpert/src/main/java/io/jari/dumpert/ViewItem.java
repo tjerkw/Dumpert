@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.view.ViewCompat;
@@ -113,6 +114,29 @@ public class ViewItem extends Base {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onPause() {
+        if(item == null || !item.video) return;
+        //videoview starts tripping once activity gets paused, so stop the thing, hide it, show progressbar
+        final VideoView videoView = (VideoView) findViewById(R.id.item_video);
+        final View videoViewFrame = findViewById(R.id.item_video_frame);
+        findViewById(R.id.item_loading).setVisibility(View.VISIBLE);
+        findViewById(R.id.item_type).setVisibility(View.GONE);
+        findViewById(R.id.item_frame).setVisibility(View.VISIBLE);
+        videoViewFrame.setAlpha(0f);
+        videoView.stopPlayback();
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        if(itemInfo != null && (item != null && item.video)) {
+            //when we return to the activity, restart the video
+            startVideo(itemInfo);
+        }
+        super.onResume();
+    }
+
     public void startVideo(ItemInfo itemInfo) {
         final View cardFrame = findViewById(R.id.item_frame);
         final View videoViewFrame = findViewById(R.id.item_video_frame);
@@ -192,7 +216,7 @@ public class ViewItem extends Base {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            if (!err && !Utils.isOffline(ViewItem.this) && true) { //replace true with preference check
+                            if (!err && !Utils.isOffline(ViewItem.this) && PreferenceManager.getDefaultSharedPreferences(ViewItem.this).getBoolean("autoplay_vids", true)) {
                                 startVideo(itemInfo);
                             } else {
                                 progressBar.setVisibility(View.GONE);

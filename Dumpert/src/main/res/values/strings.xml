@@ -19,4 +19,10 @@
     <string name="open_drawer">Open drawer</string>
     <string name="close_drawer">Close drawer</string>
 
+    <string name="about_1stline">Deze app is gemaakt door WebArtisans.\nWij maken (native) android apps, handmade websites en meer voor een lage prijs.</string>
+
+    <string name="general_settings">General settings</string>
+    <string name="autoplay_vids">Play video\'s automatically</string>
+    <string name="autoplay_vids_sum">With build-in videoplayer</string>
+
 </resources>

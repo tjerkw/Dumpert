@@ -8,4 +8,8 @@
 
     <color name="bestcomment_bg">#C8E6C9</color>
     <color name="bestcomment_bg_accent">#81C784</color>
+
+    <color name="about_blue">#d24052b6</color>
+    <color name="about_blue_button">#e6303d79</color>
+    <color name="about_blue_dark">#d22f3c84</color>
 </resources>

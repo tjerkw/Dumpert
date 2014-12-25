@@ -11,4 +11,13 @@
         <item name="colorPrimaryDark">@color/green_accent</item>
         <item name="colorAccent">@color/green_accent</item>
     </style>
+
+    <style name="Theme.Dumpert.About" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@color/about_blue</item>
+        <item name="colorPrimaryDark">@color/about_blue</item>
+        <item name="colorAccent">@color/about_blue</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:backgroundDimEnabled">false</item>
+    </style>
 </resources>

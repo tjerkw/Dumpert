@@ -12,4 +12,5 @@ public class NavigationItem {
     public Drawable drawable;
     public Main.NavigationItemCallback callback;
     public boolean selected = false;
+    public boolean hasDivider = false;
 }

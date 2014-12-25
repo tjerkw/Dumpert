@@ -2,6 +2,8 @@ package io.jari.dumpert;
 
 import android.app.Activity;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
+import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -85,7 +87,8 @@ public class CommentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             best.setVisibility(!comment.best ? View.GONE : View.VISIBLE);
             author.setText(comment.author);
             score.setText(comment.score == null ? "" : Integer.toString(comment.score));
-            message.setText(comment.content);
+            message.setText(Html.fromHtml(comment.content));
+            Linkify.addLinks(message, Linkify.ALL);
             time.setText(comment.time);
         }
     }

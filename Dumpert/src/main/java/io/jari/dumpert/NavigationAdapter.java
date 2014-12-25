@@ -57,17 +57,23 @@ public class NavigationAdapter extends RecyclerView.Adapter {
         public void update(final NavigationItem navigationItem) {
             ImageView image = (ImageView)view.findViewById(R.id.item_image);
             TextView title = (TextView)view.findViewById(R.id.item_name);
+            View divider = view.findViewById(R.id.divider);
+            View layout = view.findViewById(R.id.item);
             image.setImageDrawable(navigationItem.drawable);
             title.setText(navigationItem.title);
 
             if(navigationItem.selected)
-                view.setBackgroundResource(R.drawable.selected_ripple);
-            else view.setBackgroundDrawable(activity.obtainStyledAttributes(new int[]{android.R.attr.selectableItemBackground}).getDrawable(0));
+                layout.setBackgroundResource(R.drawable.selected_ripple);
+            else layout.setBackgroundDrawable(activity.obtainStyledAttributes(new int[]{android.R.attr.selectableItemBackground}).getDrawable(0));
 
-            view.setOnClickListener(new View.OnClickListener() {
+            if(navigationItem.hasDivider)
+                divider.setVisibility(View.VISIBLE);
+            else divider.setVisibility(View.GONE);
+
+            layout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(navigationItem.callback != null)
+                    if (navigationItem.callback != null)
                         navigationItem.callback.onClick(navigationItem);
                 }
             });

@@ -1,5 +1,6 @@
 package io.jari.dumpert;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
@@ -10,6 +11,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.FrameLayout;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.listeners.ActionClickListener;
 import io.jari.dumpert.animators.SlideInOutBottomItemAnimator;
@@ -136,6 +139,7 @@ public class Main extends Base {
         //plaatjes
         NavigationItem navigationItemPlaatjes = new NavigationItem();
         navigationItemPlaatjes.title = "Plaatjes";
+        navigationItemPlaatjes.hasDivider = true;
         navigationItemPlaatjes.drawable = getResources().getDrawable(R.drawable.ic_photo2);
         navigationItemPlaatjes.callback = new NavigationItemCallback() {
             @Override
@@ -169,7 +173,45 @@ public class Main extends Base {
             }
         };
 
-        navigationAdapter = new NavigationAdapter(new NavigationItem[] { navigationItem, navigationItemHot, navigationItemPlaatjes, navigationItemVideos, navigationItemAudio }, this);
+        //settings
+        NavigationItem navigationItemSettings = new NavigationItem();
+        navigationItemSettings.title = "Settings";
+        navigationItemSettings.hasDivider = true;
+        navigationItemSettings.drawable = getResources().getDrawable(R.drawable.ic_settings);
+        navigationItemSettings.callback = new NavigationItemCallback() {
+            @Override
+            public void onClick(NavigationItem navigationItem) {
+                drawerLayout.closeDrawer(drawerRecyclerView);
+                navigationAdapter.setActive(navigationItem);
+                FrameLayout preferences = (FrameLayout)findViewById(R.id.settings_frame);
+                preferences.setVisibility(View.VISIBLE);
+                getFragmentManager().beginTransaction().replace(R.id.settings_frame, new PreferencesFragment()).commit();
+            }
+        };
+
+        //about
+        NavigationItem navigationItemAbout = new NavigationItem();
+        navigationItemAbout.title = "About";
+        navigationItemAbout.drawable = getResources().getDrawable(R.drawable.ic_info);
+        navigationItemAbout.callback = new NavigationItemCallback() {
+            @Override
+            public void onClick(NavigationItem navigationItem) {
+                drawerLayout.closeDrawer(drawerRecyclerView);
+                Intent intent = new Intent(Main.this, About.class);
+                startActivity(intent);
+            }
+        };
+
+        navigationAdapter =
+                new NavigationAdapter(new NavigationItem[]{
+                        navigationItem,
+                        navigationItemHot,
+                        navigationItemPlaatjes,
+                        navigationItemVideos,
+                        navigationItemAudio,
+                        navigationItemSettings,
+                        navigationItemAbout
+                }, this);
         drawerRecyclerView.setAdapter(navigationAdapter);
     }
 
@@ -276,6 +318,7 @@ public class Main extends Base {
         public void onClick(NavigationItem navigationItem) {
             navigationAdapter.setActive(navigationItem);
             drawerLayout.closeDrawer(drawerRecyclerView);
+            findViewById(R.id.settings_frame).setVisibility(View.GONE);
             swipeRefreshLayout.setRefreshing(true);
             cardAdapter.removeAll();
             page = 1;
