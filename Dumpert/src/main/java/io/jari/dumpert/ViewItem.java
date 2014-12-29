@@ -87,16 +87,19 @@ public class ViewItem extends Base {
 
     @Override
     public void onBackPressed() {
-        if(!item.video) {
-            super.onBackPressed();
-            return;
+        if(item.video) {
+            final VideoView videoView = (VideoView) findViewById(R.id.item_video);
+            videoView.suspend();
+            videoView.setVisibility(View.GONE); //paranoia
+            findViewById(R.id.item_video_frame).setVisibility(View.GONE);
+            findViewById(R.id.item_frame).setVisibility(View.VISIBLE);
+            findViewById(R.id.item_loading).setVisibility(View.GONE);
+        } else if(item.audio) {
+            findViewById(R.id.item_frame).setVisibility(View.VISIBLE);
+            findViewById(R.id.item_video_frame).setAlpha(0f);
+            if(audioHandler != null) audioHandler.controller.hide();
         }
-        final VideoView videoView = (VideoView) findViewById(R.id.item_video);
-        videoView.suspend();
-        videoView.setVisibility(View.GONE); //paranoia
-        findViewById(R.id.item_video_frame).setVisibility(View.GONE);
-        findViewById(R.id.item_frame).setVisibility(View.VISIBLE);
-        findViewById(R.id.item_loading).setVisibility(View.GONE);
+
         super.onBackPressed();
     }
 
@@ -204,10 +207,6 @@ public class ViewItem extends Base {
                         audioHandler = new AudioHandler() {
                             @Override
                             public void onPrepared(MediaPlayer mediaplayer) {
-                                //hack videoframe to same size as controller
-                                ViewGroup.LayoutParams layoutParams = master.getLayoutParams();
-                                layoutParams.height = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, getResources().getDisplayMetrics()));
-                                master.setLayoutParams(layoutParams);
                                 super.onPrepared(mediaplayer);
 
                                 //hide progressbar etc
@@ -236,6 +235,21 @@ public class ViewItem extends Base {
             itemType.setImageResource(R.drawable.ic_play_circle_fill);
         else if(item.audio)
             itemType.setImageResource(R.drawable.ic_audiotrack);
+
+        int gray = getResources().getColor(R.color.gray_bg);
+        if(item.audio) {
+            FrameLayout itemFrame = (FrameLayout)findViewById(R.id.item_frame);
+            FrameLayout master = (FrameLayout)findViewById(R.id.item_master_frame);
+            ViewGroup.LayoutParams layoutParams = master.getLayoutParams();
+            ViewGroup.LayoutParams layoutParams2 = itemFrame.getLayoutParams();
+            layoutParams.height = layoutParams2.height = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, getResources().getDisplayMetrics()));
+            master.setLayoutParams(layoutParams);
+            itemFrame.setLayoutParams(layoutParams2);
+
+            itemImage.setBackgroundColor(obtainStyledAttributes(new int[]{R.attr.colorPrimaryDark}).getColor(0, gray));
+        } else {
+            itemImage.setBackgroundColor(gray);
+        }
 
         final ProgressBar progressBar = (ProgressBar)findViewById(R.id.item_loading);
         if(item.video || item.audio) {

@@ -65,6 +65,14 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> {
             Linkify.addLinks(description, Linkify.ALL);
             stats.setText(item.stats);
             date.setText(item.date);
+
+            int gray = context.getResources().getColor(R.color.gray_bg);
+            if(item.audio) {
+                imageView.setBackgroundColor(context.obtainStyledAttributes(new int[]{R.attr.colorPrimaryDark}).getColor(0, gray));
+            } else {
+                imageView.setBackgroundColor(gray);
+            }
+
             this.item = item;
         }
     }
