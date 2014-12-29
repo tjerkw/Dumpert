@@ -45,6 +45,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> {
 
         public void update(Item item) {
             ImageView imageView = (ImageView)cardView.findViewById(R.id.card_image);
+            ImageView type = (ImageView)cardView.findViewById(R.id.card_type);
             TextView title = (TextView)cardView.findViewById(R.id.card_title);
             TextView description = (TextView)cardView.findViewById(R.id.card_description);
             TextView stats = (TextView)cardView.findViewById(R.id.card_stats);
@@ -54,6 +55,10 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> {
                     .with(context)
                     .load(item.imageUrl)
                     .into(imageView);
+
+            if(item.photo) type.setImageResource(R.drawable.ic_photo);
+            else if(item.video) type.setImageResource(R.drawable.ic_play_circle_fill);
+            else if(item.audio) type.setImageResource(R.drawable.ic_audiotrack);
 
             title.setText(item.title);
             description.setText(Html.fromHtml(item.description));

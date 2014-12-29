@@ -29,8 +29,6 @@ public class PreferencesFragment extends PreferenceFragment {
                 }
             }
         };
-
-//        getPreferenceManager().getSharedPreferences().registerOnSharedPreferenceChangeListener(listener);
     }
 
     @Override

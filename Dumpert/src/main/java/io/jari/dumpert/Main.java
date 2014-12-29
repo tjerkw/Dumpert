@@ -117,6 +117,7 @@ public class Main extends Base {
 
     public void switchToSettings(NavigationItem navigationItem) {
         drawerLayout.closeDrawer(drawerRecyclerView);
+        if(cardAdapter != null) cardAdapter.removeAll();
         navigationAdapter.setActive(navigationItem);
         FrameLayout preferences = (FrameLayout)findViewById(R.id.settings_frame);
         preferences.setVisibility(View.VISIBLE);
@@ -128,7 +129,7 @@ public class Main extends Base {
     public void populateNavigation() {
         //nieuw
         NavigationItem navigationItem = new NavigationItem();
-        navigationItem.title = "Nieuw";
+        navigationItem.title = getResources().getString(R.string.nav_new);
         navigationItem.drawable = getResources().getDrawable(R.drawable.ic_new_releases);
         navigationItem.selected = true;
         navigationItem.callback = new NavigationItemCallback() {
@@ -141,7 +142,7 @@ public class Main extends Base {
 
         //toppers
         NavigationItem navigationItemHot = new NavigationItem();
-        navigationItemHot.title = "Toppers";
+        navigationItemHot.title = getResources().getString(R.string.nav_top);
         navigationItemHot.drawable = getResources().getDrawable(R.drawable.ic_whatshot);
         navigationItemHot.callback = new NavigationItemCallback() {
             @Override
@@ -153,7 +154,7 @@ public class Main extends Base {
 
         //plaatjes
         NavigationItem navigationItemPlaatjes = new NavigationItem();
-        navigationItemPlaatjes.title = "Plaatjes";
+        navigationItemPlaatjes.title = getResources().getString(R.string.nav_images);
         navigationItemPlaatjes.hasDivider = true;
         navigationItemPlaatjes.drawable = getResources().getDrawable(R.drawable.ic_photo2);
         navigationItemPlaatjes.callback = new NavigationItemCallback() {
@@ -166,7 +167,7 @@ public class Main extends Base {
 
         //filmpjes
         NavigationItem navigationItemVideos = new NavigationItem();
-        navigationItemVideos.title = "Video's";
+        navigationItemVideos.title = getResources().getString(R.string.nav_videos);
         navigationItemVideos.drawable = getResources().getDrawable(R.drawable.ic_play_circle_fill2);
         navigationItemVideos.callback = new NavigationItemCallback() {
             @Override
@@ -178,7 +179,7 @@ public class Main extends Base {
 
         //audio
         NavigationItem navigationItemAudio = new NavigationItem();
-        navigationItemAudio.title = "Audio";
+        navigationItemAudio.title = getResources().getString(R.string.nav_audio);
         navigationItemAudio.drawable = getResources().getDrawable(R.drawable.ic_volume_up);
         navigationItemAudio.callback = new NavigationItemCallback() {
             @Override
@@ -190,7 +191,7 @@ public class Main extends Base {
 
         //settings
         NavigationItem navigationItemSettings = new NavigationItem();
-        navigationItemSettings.title = "Settings";
+        navigationItemSettings.title = getResources().getString(R.string.nav_settings);
         navigationItemSettings.hasDivider = true;
         navigationItemSettings.drawable = getResources().getDrawable(R.drawable.ic_settings);
         settingsNavItem = navigationItemSettings;
@@ -203,7 +204,7 @@ public class Main extends Base {
 
         //about
         NavigationItem navigationItemAbout = new NavigationItem();
-        navigationItemAbout.title = "About";
+        navigationItemAbout.title = getResources().getString(R.string.nav_about);
         navigationItemAbout.drawable = getResources().getDrawable(R.drawable.ic_info);
         navigationItemAbout.callback = new NavigationItemCallback() {
             @Override

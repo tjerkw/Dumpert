@@ -11,6 +11,7 @@ public class Item implements Serializable {
     public String title;
     public boolean photo;
     public boolean video;
+    public boolean audio;
     public String thumbUrl;
     public String imageUrl;
     public String url;

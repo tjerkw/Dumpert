@@ -1,5 +1,8 @@
 package io.jari.dumpert.api;
+
+import android.app.Activity;
 import android.content.Context;
+import android.preference.PreferenceManager;
 import android.util.Base64;
 import android.util.Log;
 import io.jari.dumpert.Utils;
@@ -69,6 +72,7 @@ public class API {
             item.stats = element.select("p.stats").first().text();
             item.photo = element.select(".foto").size() > 0;
             item.video = element.select(".video").size() > 0;
+            item.audio = element.select(".audio").size() > 0;
             if(item.video)
                 item.imageUrl = item.thumbUrl.replace("sq_thumbs", "stills");
             else if(item.photo) {
@@ -93,14 +97,21 @@ public class API {
         return API.getListing(0, context, path);
     }
 
-    public static ItemInfo getItemInfo(String url) throws IOException, JSONException {
-        Document document = Jsoup.connect(url).get();
+    public static ItemInfo getItemInfo(Item item, Activity context) throws IOException, JSONException {
+        Document document = Jsoup.connect(item.url).get();
         ItemInfo itemInfo = new ItemInfo();
         itemInfo.itemId = document.select("body").first().attr("data-itemid");
-        String rawFiles = document.select(".videoplayer").first().attr("data-files");
-        rawFiles = new String(Base64.decode(rawFiles, Base64.DEFAULT), "UTF-8");
-        JSONObject files = new JSONObject(rawFiles);
-        itemInfo.tabletVideo = files.getString("tablet");
+        if(item.video) {
+            String rawFiles = document.select(".videoplayer").first().attr("data-files");
+            rawFiles = new String(Base64.decode(rawFiles, Base64.DEFAULT), "UTF-8");
+            JSONObject files = new JSONObject(rawFiles);
+            if(PreferenceManager.getDefaultSharedPreferences(context).getString("video_quality", "hd").equals("hd"))
+                itemInfo.media = files.getString("tablet");
+            else
+                itemInfo.media = files.getString("mobile");
+        } else if(item.audio) {
+            itemInfo.media = document.select(".dump-player").first().select(".audio").first().attr("data-audurl");
+        }
         return itemInfo;
     }
 

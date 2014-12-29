@@ -8,6 +8,6 @@ import java.io.Serializable;
  * Time: 23:58
  */
 public class ItemInfo implements Serializable {
-    public String tabletVideo;
+    public String media;
     public String itemId;
 }

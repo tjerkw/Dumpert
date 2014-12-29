@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <string name="app_name">Dumpert</string>
-    <string name="action_settings">Settings</string>
-
     <string name="tip_touch_to_enlarge">TIP: Raak aan om te vergroten.</string>
     <string name="tip_zoom">TIP: Je kan hier inzoomen.</string>
     <string name="tip_close">Sluiten</string>
@@ -17,6 +13,14 @@
 
     <string name="open_drawer">Open drawer</string>
     <string name="close_drawer">Close drawer</string>
+
+    <string name="nav_new">Nieuw</string>
+    <string name="nav_top">Toppers</string>
+    <string name="nav_images">Plaatjes</string>
+    <string name="nav_videos">Video\'s</string>
+    <string name="nav_audio">Audio</string>
+    <string name="nav_settings">Instellingen</string>
+    <string name="nav_about">Over</string>
 
     <string name="about_1stline">Wij zijn WebArtisans.\nWe hebben een passie voor het maken van handmade websites en (native) android apps voor een lage prijs.</string>
     <string name="about_button">Onze website</string>

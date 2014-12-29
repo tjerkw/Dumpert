@@ -14,12 +14,11 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.MediaController;
-import android.widget.ProgressBar;
-import android.widget.VideoView;
+import android.view.ViewGroup;
+import android.widget.*;
 import com.nispok.snackbar.Snackbar;
 import com.squareup.picasso.Picasso;
 import io.jari.dumpert.animators.SlideInOutBottomItemAnimator;
@@ -115,70 +114,114 @@ public class ViewItem extends Base {
 
     @Override
     protected void onPause() {
-        if(item == null || !item.video) {
+        if(item == null || (!item.video && !item.audio)) {
             super.onPause();
             return;
         }
-        //videoview starts tripping once activity gets paused, so stop the thing, hide it, show progressbar
-        final VideoView videoView = (VideoView) findViewById(R.id.item_video);
-        final View videoViewFrame = findViewById(R.id.item_video_frame);
-        findViewById(R.id.item_loading).setVisibility(View.VISIBLE);
-        findViewById(R.id.item_type).setVisibility(View.GONE);
-        findViewById(R.id.item_frame).setVisibility(View.VISIBLE);
-        videoViewFrame.setAlpha(0f);
-        videoView.stopPlayback();
+        if(item.video) {
+            //videoview starts tripping once activity gets paused, so stop the thing, hide it, show progressbar
+            final VideoView videoView = (VideoView) findViewById(R.id.item_video);
+            final View videoViewFrame = findViewById(R.id.item_video_frame);
+            findViewById(R.id.item_loading).setVisibility(View.VISIBLE);
+            findViewById(R.id.item_type).setVisibility(View.GONE);
+            findViewById(R.id.item_frame).setVisibility(View.VISIBLE);
+            videoViewFrame.setAlpha(0f);
+            videoView.stopPlayback();
+        } else {
+            if(audioHandler != null) audioHandler.pause();
+        }
+
         super.onPause();
     }
 
     @Override
     protected void onResume() {
-        if(itemInfo != null && (item != null && item.video)) {
-            //when we return to the activity, restart the video
-            startVideo(itemInfo);
+        if(itemInfo != null && (item != null) && (item.video || item.audio)) {
+            if(item.video) {
+                //when we return to the activity, restart the video
+                startMedia(itemInfo, item);
+            } else {
+                if(audioHandler != null) audioHandler.start();
+            }
+
         }
         super.onResume();
     }
 
-    public void startVideo(ItemInfo itemInfo) {
+    AudioHandler audioHandler;
+
+    public void startMedia(final ItemInfo itemInfo, final Item item) {
         final View cardFrame = findViewById(R.id.item_frame);
         final View videoViewFrame = findViewById(R.id.item_video_frame);
         final VideoView videoView = (VideoView) findViewById(R.id.item_video);
 
-        videoView.setVideoURI(Uri.parse(itemInfo.tabletVideo));
+        if(item.video) {
+            videoView.setVideoURI(Uri.parse(itemInfo.media));
 
-        MediaController mediaController = new MediaController(this);
+            final MediaController mediaController = new MediaController(this);
 
-        mediaController.setAnchorView(videoViewFrame);
-        videoView.setMediaController(mediaController);
+            mediaController.setAnchorView(videoViewFrame);
 
-        videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-            @Override
-            public void onPrepared(MediaPlayer mp) {
-                Log.d("dumpert.viewitem", "onPrepared");
-                cardFrame.setVisibility(View.GONE);
-                videoViewFrame.setAlpha(1f);
-                ViewCompat.setTransitionName(videoViewFrame, "item");
-            }
-        });
+            videoView.setMediaController(mediaController);
 
-        videoView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
-            @Override
-            public boolean onError(MediaPlayer mp, int what, int extra) {
-                findViewById(R.id.item_loading).setVisibility(View.GONE);
-                findViewById(R.id.item_type).setVisibility(View.VISIBLE);
-                videoViewFrame.setAlpha(0f);
+            videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                @Override
+                public void onPrepared(MediaPlayer mp) {
+                    Log.d("dumpert.viewitem", "onPrepared");
+                    cardFrame.setVisibility(View.GONE);
+                    videoViewFrame.setAlpha(1f);
+//                ViewCompat.setTransitionName(videoViewFrame, "item");
+                }
+            });
 
-                Snackbar.with(ViewItem.this)
-                        .text(R.string.video_failed)
-                        .textColor(Color.parseColor("#FFCDD2"))
-                        .show(ViewItem.this);
+            videoView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+                @Override
+                public boolean onError(MediaPlayer mp, int what, int extra) {
+                    findViewById(R.id.item_loading).setVisibility(View.GONE);
+                    findViewById(R.id.item_type).setVisibility(View.VISIBLE);
+                    videoViewFrame.setAlpha(0f);
 
-                return true;
-            }
-        });
+                    Snackbar.with(ViewItem.this)
+                            .text(R.string.video_failed)
+                            .textColor(Color.parseColor("#FFCDD2"))
+                            .show(ViewItem.this);
+
+                    return true;
+                }
+            });
 
 
-        videoView.start();
+            videoView.start();
+        }
+
+        if(item.audio) {
+            //audiohandler is sync, so don't call from main thread
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        final FrameLayout master = (FrameLayout)findViewById(R.id.item_master_frame);
+                        audioHandler = new AudioHandler() {
+                            @Override
+                            public void onPrepared(MediaPlayer mediaplayer) {
+                                //hack videoframe to same size as controller
+                                ViewGroup.LayoutParams layoutParams = master.getLayoutParams();
+                                layoutParams.height = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, getResources().getDisplayMetrics()));
+                                master.setLayoutParams(layoutParams);
+                                super.onPrepared(mediaplayer);
+
+                                //hide progressbar etc
+                                cardFrame.setVisibility(View.GONE);
+                                videoViewFrame.setAlpha(1f);
+                            }
+                        };
+                        audioHandler.playAudio(itemInfo.media, ViewItem.this, master);
+                    } catch(Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
+        }
     }
     
     public void initHeader() {
@@ -187,10 +230,15 @@ public class ViewItem extends Base {
         Picasso.with(this).load(item.imageUrl).into(itemImage);
 
         final ImageView itemType = (ImageView)findViewById(R.id.item_type);
-        itemType.setImageDrawable(getResources().getDrawable(item.photo ? R.drawable.ic_photo : R.drawable.ic_play_circle_fill));
+        if(item.photo)
+            itemType.setImageResource(R.drawable.ic_photo);
+        else if(item.video)
+            itemType.setImageResource(R.drawable.ic_play_circle_fill);
+        else if(item.audio)
+            itemType.setImageResource(R.drawable.ic_audiotrack);
 
-        if(item.video) {
-            final ProgressBar progressBar = (ProgressBar)findViewById(R.id.item_loading);
+        final ProgressBar progressBar = (ProgressBar)findViewById(R.id.item_loading);
+        if(item.video || item.audio) {
             progressBar.setVisibility(View.VISIBLE);
             itemType.setVisibility(View.GONE);
 
@@ -200,7 +248,7 @@ public class ViewItem extends Base {
                     boolean error = false;
                     try {
                         if(!Utils.isOffline(ViewItem.this))
-                            itemInfo = API.getItemInfo(item.url);
+                            itemInfo = API.getItemInfo(item, ViewItem.this);
                     } catch (Exception e) {
                         error = true;
                         runOnUiThread(new Runnable() {
@@ -219,7 +267,7 @@ public class ViewItem extends Base {
                         @Override
                         public void run() {
                             if (!err && !Utils.isOffline(ViewItem.this) && preferences.getBoolean("autoplay_vids", true)) {
-                                startVideo(itemInfo);
+                                startMedia(itemInfo, item);
                             } else {
                                 progressBar.setVisibility(View.GONE);
                                 itemType.setVisibility(View.VISIBLE);
@@ -238,8 +286,8 @@ public class ViewItem extends Base {
             public void onClick(View v) {
                 if(item.photo)
                     Image.launch(ViewItem.this, itemImage, item.imageUrl);
-                else if(item.video && itemInfo != null) {
-                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(itemInfo.tabletVideo)));
+                else if(item.video && itemInfo != null && progressBar.getVisibility() != View.VISIBLE) {
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(itemInfo.media)));
                 }
             }
         });
