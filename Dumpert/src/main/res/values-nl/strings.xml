@@ -8,6 +8,7 @@
 
     <string name="comments_failed">Reaguursels laden mislukt.</string>
     <string name="video_failed">Video laden mislukt.</string>
+    <string name="gif_failed">Afbeelding laden mislukt.</string>
 
     <string name="best_comment">topreaguursel</string>
 

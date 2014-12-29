@@ -24,12 +24,11 @@
             android:id="@+id/card_frame">
             <ImageView
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="200dp"
                 android:id="@+id/card_image"
                 android:background="@color/gray_bg"
                 android:scaleType="centerCrop"
-                android:minHeight="170dp"
-                android:maxHeight="170dp"/>
+                />
 
             <com.devspark.robototextview.widget.RobotoTextView
                 app:typeface="roboto_slab_regular"

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -11,9 +12,16 @@ import android.support.v4.view.ViewCompat;
 import android.view.View;
 import android.widget.ImageView;
 import com.nispok.snackbar.Snackbar;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
-import io.jari.dumpert.api.Item;
+import org.apache.http.util.ByteArrayBuffer;
+import pl.droidsonroids.gif.GifDrawable;
+import pl.droidsonroids.gif.GifImageView;
 import uk.co.senab.photoview.PhotoViewAttacher;
+
+import java.io.*;
+import java.net.URL;
+import java.net.URLConnection;
 
 /**
  * JARI.IO
@@ -21,8 +29,6 @@ import uk.co.senab.photoview.PhotoViewAttacher;
  * Time: 14:50
  */
 public class Image extends Base {
-
-    Item item;
 
     void setTheme() {
         String theme = preferences.getString("theme", "green");
@@ -52,15 +58,88 @@ public class Image extends Base {
         ImageView imageView = (ImageView)findViewById(R.id.image_image);
         ViewCompat.setTransitionName(imageView, "image");
 
-        String image = getIntent().getStringExtra("image");
+        final String image = getIntent().getStringExtra("image");
         Picasso
                 .with(this)
                 .load(image)
-                .into(imageView);
+                .into(imageView, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        //the only way we can check if this is a gif, probably not more needed
+                        if(image.endsWith(".gif")) {
+                            final View loader = findViewById(R.id.image_loader);
+                            loader.setVisibility(View.VISIBLE);
+
+
+                            new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        //do gif magic
+                                        final GifImageView gifImageView = (GifImageView)findViewById(R.id.image_image);
+
+                                        String file = getCacheDir().getPath() + "/" + Uri.parse(image).getLastPathSegment();
+                                        download(image, file);
+
+                                        final GifDrawable gif = new GifDrawable(file);
+
+                                        //clean up
+                                        new File(file).delete();
+
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                gifImageView.setImageDrawable(gif);
+                                            }
+                                        });
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                        Snackbar.with(Image.this)
+                                                .text(R.string.gif_failed)
+                                                .textColor(Color.parseColor("#FFCDD2"))
+                                                .show(Image.this);
+                                    }
+                                    finally {
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                loader.setVisibility(View.GONE);
+                                            }
+                                        });
+                                    }
+                                }
+                            }).start();
+                        }
+                    }
+
+                    @Override
+                    public void onError() {
+
+                    }
+                });
 
         new PhotoViewAttacher(imageView);
 
         this.tip();
+    }
+
+    public void download(String url, String fileName) throws IOException {  //this is the downloader method
+        URLConnection ucon = new URL(url).openConnection();
+        File file = new File(fileName);
+
+        InputStream is = ucon.getInputStream();
+        BufferedInputStream bis = new BufferedInputStream(is);
+
+        ByteArrayBuffer baf = new ByteArrayBuffer(50);
+        int current = 0;
+        while ((current = bis.read()) != -1) {
+            baf.append((byte) current);
+        }
+
+
+        FileOutputStream fos = new FileOutputStream(file);
+        fos.write(baf.toByteArray());
+        fos.close();
     }
 
     public void tip() {

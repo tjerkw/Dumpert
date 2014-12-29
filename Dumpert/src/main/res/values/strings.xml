@@ -11,6 +11,7 @@
 
     <string name="comments_failed">Unable to load comments.</string>
     <string name="video_failed">Unable to load video.</string>
+    <string name="gif_failed">Unable to load image.</string>
 
     <string name="best_comment">best comment</string>
 
