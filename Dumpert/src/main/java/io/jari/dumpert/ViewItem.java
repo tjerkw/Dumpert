@@ -211,6 +211,7 @@ public class ViewItem extends Base {
 
                                 //hide progressbar etc
                                 cardFrame.setVisibility(View.GONE);
+                                findViewById(R.id.item_loading).setVisibility(View.GONE);
                                 videoViewFrame.setAlpha(1f);
                             }
                         };
