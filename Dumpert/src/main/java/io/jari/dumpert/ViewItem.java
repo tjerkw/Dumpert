@@ -97,7 +97,7 @@ public class ViewItem extends Base {
         } else if(item.audio) {
             findViewById(R.id.item_frame).setVisibility(View.VISIBLE);
             findViewById(R.id.item_video_frame).setAlpha(0f);
-            if(audioHandler != null) audioHandler.controller.hide();
+            if(audioHandler != null && audioHandler.controller != null) audioHandler.controller.hide();
         }
 
         super.onBackPressed();
@@ -218,6 +218,10 @@ public class ViewItem extends Base {
                         audioHandler.playAudio(itemInfo.media, ViewItem.this, master);
                     } catch(Exception e) {
                         e.printStackTrace();
+                        Snackbar.with(ViewItem.this)
+                                .text(R.string.audio_failed)
+                                .textColor(Color.parseColor("#FFCDD2"))
+                                .show(ViewItem.this);
                     }
                 }
             }).start();
@@ -227,7 +231,7 @@ public class ViewItem extends Base {
     public void initHeader() {
         final ImageView itemImage = (ImageView)findViewById(R.id.item_image);
         item = (Item)getIntent().getSerializableExtra("item");
-        Picasso.with(this).load(item.imageUrl).into(itemImage);
+        Picasso.with(this).load(item.imageUrls == null ? null : item.imageUrls[0]).into(itemImage);
 
         final ImageView itemType = (ImageView)findViewById(R.id.item_type);
         if(item.photo)
@@ -300,7 +304,7 @@ public class ViewItem extends Base {
             @Override
             public void onClick(View v) {
                 if(item.photo)
-                    Image.launch(ViewItem.this, itemImage, item.imageUrl);
+                    Image.launch(ViewItem.this, itemImage, item.imageUrls);
                 else if(item.video && itemInfo != null && progressBar.getVisibility() != View.VISIBLE) {
                     startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(itemInfo.media)));
                 }
@@ -324,7 +328,7 @@ public class ViewItem extends Base {
             @Override
             public void run() {
                 try {
-                    final Comment[] commentsData = API.getComments(id);
+                    final Comment[] commentsData = API.getComments(id, ViewItem.this);
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {

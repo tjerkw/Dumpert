@@ -13,7 +13,7 @@ public class Item implements Serializable {
     public boolean video;
     public boolean audio;
     public String thumbUrl;
-    public String imageUrl;
+    public String[] imageUrls;
     public String url;
     public String description;
     public String date;

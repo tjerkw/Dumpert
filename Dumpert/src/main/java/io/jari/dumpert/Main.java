@@ -1,7 +1,9 @@
 package io.jari.dumpert;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -9,7 +11,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -52,7 +53,7 @@ public class Main extends Base {
             @Override
             public void onRefresh() {
                 swipeRefreshLayout.setRefreshing(true);
-                cardAdapter.removeAll();
+                if(cardAdapter != null) cardAdapter.removeAll();
                 loadData(true, currentPath);
                 page = 0;
             }
@@ -238,9 +239,10 @@ public class Main extends Base {
     boolean offlineSnackDismissed = false;
 
     public void offlineSnack() {
-        if (offlineSnackDismissed) return;
         if (Utils.isOffline(this)) {
             getSupportActionBar().setSubtitle(R.string.cached_version);
+            if (offlineSnackDismissed) return;
+
             if (offlineSnackbar != null && offlineSnackbar.isShowing()) offlineSnackbar.dismiss();
 
             offlineSnackbar = Snackbar.with(this).text(getResources().getString(R.string.tip_offline))
@@ -258,15 +260,10 @@ public class Main extends Base {
             offlineSnackbar.show(this);
         } else {
             getSupportActionBar().setSubtitle("");
+            if (offlineSnackDismissed) return;
+
             if (offlineSnackbar != null && offlineSnackbar.isShowing()) offlineSnackbar.dismiss();
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
     }
 
     @Override
@@ -299,10 +296,42 @@ public class Main extends Base {
                     });
 
                 } catch (IOException e) {
+                    if (refresh)
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                swipeRefreshLayout.setRefreshing(false);
+                            }
+                        });
+                    errorSnack(e);
                     e.printStackTrace();
                 }
             }
         }).start();
+    }
+
+    public void errorSnack(final Exception e) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Snackbar.with(Main.this)
+                        .text(R.string.items_failed)
+                        .textColor(Color.parseColor("#FFCDD2"))
+                        .actionLabel(R.string.moreinfo)
+                        .duration(10000)
+                        .actionListener(new ActionClickListener() {
+                            @Override
+                            public void onActionClicked(Snackbar snackbar) {
+                                new AlertDialog.Builder(Main.this)
+                                        .setTitle(R.string.moreinfo)
+                                        .setMessage(e.getMessage())
+                                        .create()
+                                        .show();
+                            }
+                        })
+                        .show(Main.this);
+            }
+        });
     }
 
     public void addData(final Integer page, final String path) {
@@ -321,6 +350,8 @@ public class Main extends Base {
                         }
                     });
                 } catch (IOException e) {
+                    Main.this.page--;
+                    errorSnack(e);
                     e.printStackTrace();
                 }
             }

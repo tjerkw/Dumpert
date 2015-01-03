@@ -9,9 +9,12 @@
     <string name="tip_offline">You\'re in offline mode</string>
     <string name="cached_version">cached version</string>
 
+    <string name="items_failed">Unable to load items.</string>
     <string name="comments_failed">Unable to load comments.</string>
     <string name="video_failed">Unable to load video.</string>
+    <string name="audio_failed">Unable to load audio.</string>
     <string name="gif_failed">Unable to load image.</string>
+    <string name="moreinfo">Error info</string>
 
     <string name="best_comment">best comment</string>
 
@@ -35,6 +38,8 @@
     <string name="visual_settings">Visual settings</string>
     <string name="theme">Theme</string>
     <string name="video_quality">Video quality</string>
+    <string name="nsfw">Show NSFW content</string>
+    <string name="nsfw_sum">NSFW means \'Not Safe For Work\'</string>
 
     <string-array name="quality_values">
         <item>hq</item>

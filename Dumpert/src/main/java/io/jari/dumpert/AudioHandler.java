@@ -7,6 +7,8 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.MediaController;
 
+import java.io.IOException;
+
 /**
  * JARI.IO
  * Date: 26-12-14
@@ -21,21 +23,17 @@ public class AudioHandler implements MediaPlayer.OnBufferingUpdateListener, Medi
     private View anchor;
     private Activity context;
 
-    public void playAudio(String url, Activity context, View anchor) {
+    public void playAudio(String url, Activity context, View anchor) throws IOException {
         this.anchor = anchor;
         this.context = context;
 
-        try {
-            mediaPlayer = new MediaPlayer();
-            mediaPlayer.setDataSource(url);
-            mediaPlayer.setOnPreparedListener(this);
-            mediaPlayer.setOnBufferingUpdateListener(this);
-            mediaPlayer.setOnCompletionListener(this);
-            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-            mediaPlayer.prepare();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        mediaPlayer = new MediaPlayer();
+        mediaPlayer.setDataSource(url);
+        mediaPlayer.setOnPreparedListener(this);
+        mediaPlayer.setOnBufferingUpdateListener(this);
+        mediaPlayer.setOnCompletionListener(this);
+        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        mediaPlayer.prepare();
     }
 
     public void onPrepared(MediaPlayer mediaplayer) {

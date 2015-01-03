@@ -53,7 +53,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> {
 
             Picasso
                     .with(context)
-                    .load(item.imageUrl)
+                    .load(item.imageUrls == null ? null : item.imageUrls[0])
                     .into(imageView);
 
             if(item.photo) type.setImageResource(R.drawable.ic_photo);

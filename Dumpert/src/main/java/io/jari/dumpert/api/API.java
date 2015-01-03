@@ -14,6 +14,7 @@ import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -49,15 +50,20 @@ public class API {
      * Returns cache if in offline mode.
      */
     public static Item[] getListing(Integer page, Context context, String path) throws IOException {
+        String cacheKey = "frontpage_"+page+"_"+path.replace("/", "");
         if(Utils.isOffline(context)) {
-            Object cacheObj = API.getFromCache(context, "frontpage_"+page);
+            Object cacheObj = API.getFromCache(context, cacheKey);
             //if no cached data present, return empty array
             if(cacheObj == null) return new Item[0];
             else {
                 return (Item[])cacheObj;
             }
         }
-        Document document = Jsoup.connect("http://www.dumpert.nl" + path + ((page != 0) ? page : "")).get();
+
+        Connection connection = Jsoup.connect("http://www.dumpert.nl" + path + ((page != 0) ? page : ""));
+        if(PreferenceManager.getDefaultSharedPreferences(context).getBoolean("nsfw", false)) connection.cookie("nsfw", "1");
+        Document document = connection.get();
+
         Elements elements = document.select(".dump-cnt .dumpthumb");
 
         ArrayList<Item> itemArrayList = new ArrayList<Item>();
@@ -74,13 +80,21 @@ public class API {
             item.video = element.select(".video").size() > 0;
             item.audio = element.select(".audio").size() > 0;
             if(item.video)
-                item.imageUrl = item.thumbUrl.replace("sq_thumbs", "stills");
+                item.imageUrls = new String[] { item.thumbUrl.replace("sq_thumbs", "stills") };
             else if(item.photo) {
                 //get the image itself from it's url.
                 //sadly no other way to get full hq image :'(
                 Log.d(TAG, "Got image, requesting "+item.url);
-                Document imageDocument = Jsoup.connect(item.url).get();
-                item.imageUrl = imageDocument.select("img.player").first().attr("src");
+                Connection imageConn = Jsoup.connect(item.url);
+                if(PreferenceManager.getDefaultSharedPreferences(context).getBoolean("nsfw", false)) imageConn.cookie("nsfw", "1");
+                Document imageDocument = imageConn.get();
+
+                ArrayList<String> imgs = new ArrayList<String>();
+                for(Element img : imageDocument.select("img.player")) {
+                    imgs.add(img.attr("src"));
+                }
+                item.imageUrls = new String[imgs.size()];
+                imgs.toArray(item.imageUrls);
             }
             itemArrayList.add(item);
         }
@@ -88,7 +102,7 @@ public class API {
         Item[] returnList = new Item[itemArrayList.size()];
         itemArrayList.toArray(returnList);
 
-        saveToCache(context, "frontpage_"+page, returnList);
+        saveToCache(context, cacheKey, returnList);
 
         return returnList;
     }
@@ -115,7 +129,7 @@ public class API {
         return itemInfo;
     }
 
-    public static Comment[] getComments(String itemId) throws IOException {
+    public static Comment[] getComments(String itemId, Context context) throws IOException {
         HttpClient httpclient = new DefaultHttpClient();
         HttpGet httpget = new HttpGet("http://dumpcomments.geenstijl.nl/"+itemId+".js");
         ResponseHandler<String> responseHandler = new BasicResponseHandler();
