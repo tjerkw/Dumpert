@@ -71,4 +71,6 @@
         <item>WebArtisans</item>
     </string-array>
 
+    <string name="share">Share</string>
+
 </resources>

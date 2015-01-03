@@ -44,4 +44,6 @@
         <item>Blauw Grijs</item>
         <item>WebArtisans</item>
     </string-array>
+
+    <string name="share">Delen</string>
 </resources>

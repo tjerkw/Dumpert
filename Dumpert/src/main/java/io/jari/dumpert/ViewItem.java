@@ -15,6 +15,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -86,6 +87,12 @@ public class ViewItem extends Base {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.itemview, menu);
+        return true;
+    }
+
+    @Override
     public void onBackPressed() {
         if(item.video) {
             final VideoView videoView = (VideoView) findViewById(R.id.item_video);
@@ -109,6 +116,12 @@ public class ViewItem extends Base {
 
         if (id == android.R.id.home) {
             this.onBackPressed();
+            return true;
+        } else if(id == R.id.share) {
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.putExtra(Intent.EXTRA_TEXT, this.item.title + " - " + this.item.url + " - gedeeld via Dumpert Reader http://is.gd/jXgC7D");
+            intent.setType("text/plain");
+            startActivity(intent);
             return true;
         }
 
