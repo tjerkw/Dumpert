@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name">Dumpert</string>
+
     <string name="tip_touch_to_enlarge">TIP: Raak aan om te vergroten.</string>
     <string name="tip_zoom">TIP: Je kan hier inzoomen.</string>
     <string name="tip_close">Sluiten</string>
+
     <string name="tip_offline">Je bent offline.</string>
     <string name="cached_version">cached version</string>
 
@@ -11,6 +14,7 @@
     <string name="video_failed">Video laden mislukt.</string>
     <string name="audio_failed">Audio laden mislukt.</string>
     <string name="gif_failed">Afbeelding laden mislukt.</string>
+    <string name="moreinfo">Error info</string>
 
     <string name="best_comment">topreaguursel</string>
 
@@ -28,13 +32,36 @@
     <string name="about_1stline">Wij zijn WebArtisans.\nWe hebben een passie voor het maken van handmade websites en (native) android apps voor een lage prijs.</string>
     <string name="about_button">Onze website</string>
 
-    <string name="general_settings">Algemene instellingen</string>
+    <string name="data_settings">Algemene instellingen</string>
     <string name="autoplay_vids">Speel video\'s vanzelf af</string>
     <string name="autoplay_vids_sum">Met ingebouwde video-speler</string>
+    <string name="visual_settings">Visual settings</string>
+    <string name="theme">Thema</string>
+    <string name="video_quality">Video kwaliteit</string>
     <string name="nsfw">Laat NSFW content zien</string>
     <string name="nsfw_sum">NSFW betekent \'Not Safe For Work\'</string>
 
-    <string name="theme">Thema</string>
+
+    <string-array name="quality_values">
+        <item>hq</item>
+        <item>hd</item>
+    </string-array>
+
+    <string-array name="quality">
+        <item>HQ</item>
+        <item>HD</item>
+    </string-array>
+
+    <string-array name="themes_values">
+        <item>green</item>
+        <item>blue</item>
+        <item>red</item>
+        <item>pink</item>
+        <item>orange</item>
+        <item>bluegray</item>
+        <item>webartisans</item>
+    </string-array>
+
     <string-array name="themes">
         <item>Groen</item>
         <item>Blauw</item>

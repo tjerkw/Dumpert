@@ -13,15 +13,13 @@ Done:
 - Comments
 - Navigation drawer
 - Sort by New/Top (from navdrawer)
-
-Todo for 1.0:
 - Albums...
 - Sounds (handle them the same as videos)
-
-Todo for later/lower priority:
 - Settings
 - NSFW filter
 - Filter image/video/sound
+
+Todo for > 1.0
 - Account switcher or smth in navdrawer
 - Logging in
 - Replying
