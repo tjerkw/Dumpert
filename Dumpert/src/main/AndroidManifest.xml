@@ -8,7 +8,7 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/Theme.Dumpert">
-        <activity android:name="io.jari.dumpert.ViewItem"/>
+        <activity android:name="io.jari.dumpert.ViewItem" android:configChanges="orientation"/>
         <activity android:name="io.jari.dumpert.Image" android:theme="@style/Theme.Dumpert.NoActionBar"/>
         <activity android:name="io.jari.dumpert.About" android:theme="@style/Theme.Dumpert.About"/>
         <activity

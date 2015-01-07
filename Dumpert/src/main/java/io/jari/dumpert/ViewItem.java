@@ -19,7 +19,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.VideoView;
 import com.nispok.snackbar.Snackbar;
 import com.squareup.picasso.Picasso;
 import io.jari.dumpert.animators.SlideInOutBottomItemAnimator;
@@ -174,7 +177,14 @@ public class ViewItem extends Base {
         if(item.video) {
             videoView.setVideoURI(Uri.parse(itemInfo.media));
 
-            final MediaController mediaController = new MediaController(this);
+            final FullscreenMediaController mediaController = new FullscreenMediaController(this);
+
+            mediaController.setListener(new FullscreenMediaController.OnMediaControllerInteractionListener() {
+                @Override
+                public void onRequestFullScreen() {
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(itemInfo.media)));
+                }
+            });
 
             mediaController.setAnchorView(videoViewFrame);
 
