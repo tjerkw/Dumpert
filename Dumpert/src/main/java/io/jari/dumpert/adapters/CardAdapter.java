@@ -1,4 +1,4 @@
-package io.jari.dumpert;
+package io.jari.dumpert.adapters;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
@@ -15,7 +15,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.RequestCreator;
+import io.jari.dumpert.R;
+import io.jari.dumpert.activities.ViewItem;
 import io.jari.dumpert.api.Item;
 
 import java.util.ArrayList;

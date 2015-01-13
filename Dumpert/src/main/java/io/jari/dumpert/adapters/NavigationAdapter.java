@@ -1,4 +1,4 @@
-package io.jari.dumpert;
+package io.jari.dumpert.adapters;
 
 import android.app.Activity;
 import android.graphics.PorterDuff;
@@ -9,6 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import io.jari.dumpert.NavigationItem;
+import io.jari.dumpert.R;
 
 import java.util.ArrayList;
 import java.util.Arrays;
