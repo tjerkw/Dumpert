@@ -67,7 +67,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> {
                                     Palette.Swatch swatch = palette.getVibrantSwatch();
                                     if(swatch != null ){
                                         cardView.setBackgroundColor(swatch.getRgb());
-                                        title.setTextColor(swatch.getTitleTextColor());
+                                        //title.setTextColor(swatch.getTitleTextColor());
                                         description.setTextColor(swatch.getBodyTextColor());
                                     }
                                 }
