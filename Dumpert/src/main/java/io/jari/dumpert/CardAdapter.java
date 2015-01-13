@@ -1,6 +1,9 @@
 package io.jari.dumpert;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.support.v7.graphics.Palette;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -10,7 +13,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.RequestCreator;
 import io.jari.dumpert.api.Item;
 
 import java.util.ArrayList;
@@ -44,17 +49,31 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> {
         }
 
         public void update(Item item) {
-            ImageView imageView = (ImageView)cardView.findViewById(R.id.card_image);
+            final ImageView imageView = (ImageView)cardView.findViewById(R.id.card_image);
             ImageView type = (ImageView)cardView.findViewById(R.id.card_type);
-            TextView title = (TextView)cardView.findViewById(R.id.card_title);
-            TextView description = (TextView)cardView.findViewById(R.id.card_description);
+            final TextView title = (TextView)cardView.findViewById(R.id.card_title);
+            final TextView description = (TextView)cardView.findViewById(R.id.card_description);
             TextView stats = (TextView)cardView.findViewById(R.id.card_stats);
             TextView date = (TextView)cardView.findViewById(R.id.card_date);
 
             Picasso
                     .with(context)
                     .load(item.imageUrls == null ? null : item.imageUrls[0])
-                    .into(imageView);
+                    .into(imageView, new Callback.EmptyCallback() {
+                        @Override public void onSuccess() {
+                            Bitmap bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
+                            Palette.generateAsync(bitmap, new Palette.PaletteAsyncListener() {
+                                public void onGenerated(Palette palette) {
+                                    Palette.Swatch swatch = palette.getVibrantSwatch();
+                                    if(swatch != null ){
+                                        cardView.setBackgroundColor(swatch.getRgb());
+                                        title.setTextColor(swatch.getTitleTextColor());
+                                        description.setTextColor(swatch.getBodyTextColor());
+                                    }
+                                }
+                            });
+                        }
+                    });
 
             if(item.photo) type.setImageResource(R.drawable.ic_photo);
             else if(item.video) type.setImageResource(R.drawable.ic_play_circle_fill);
@@ -72,7 +91,6 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> {
             } else {
                 imageView.setBackgroundColor(gray);
             }
-
             this.item = item;
         }
     }

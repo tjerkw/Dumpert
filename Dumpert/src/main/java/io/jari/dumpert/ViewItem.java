@@ -3,14 +3,19 @@ package io.jari.dumpert;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.graphics.Palette;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -24,6 +29,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.VideoView;
 import com.nispok.snackbar.Snackbar;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import io.jari.dumpert.animators.SlideInOutBottomItemAnimator;
 import io.jari.dumpert.api.API;
@@ -254,7 +260,25 @@ public class ViewItem extends Base {
     public void initHeader() {
         final ImageView itemImage = (ImageView)findViewById(R.id.item_image);
         item = (Item)getIntent().getSerializableExtra("item");
-        Picasso.with(this).load(item.imageUrls == null ? null : item.imageUrls[0]).into(itemImage);
+        Picasso.with(this).load(item.imageUrls == null ? null : item.imageUrls[0])
+                .into(itemImage, new Callback.EmptyCallback() {
+                    @Override public void onSuccess() {
+                        Bitmap bitmap = ((BitmapDrawable) itemImage.getDrawable()).getBitmap();
+                        Palette.generateAsync(bitmap, new Palette.PaletteAsyncListener() {
+                            public void onGenerated(Palette palette) {
+                                Palette.Swatch swatch = palette.getVibrantSwatch();
+                                Palette.Swatch swatchDark = palette.getDarkVibrantSwatch();
+                                if (swatch != null) {
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+                                        getWindow().setStatusBarColor(swatchDark.getRgb());
+                                    getSupportActionBar()
+                                            .setBackgroundDrawable(new ColorDrawable(swatch.getRgb()));
+
+                                }
+                            }
+                        });
+                    }
+                });
 
         final ImageView itemType = (ImageView)findViewById(R.id.item_type);
         if(item.photo)
