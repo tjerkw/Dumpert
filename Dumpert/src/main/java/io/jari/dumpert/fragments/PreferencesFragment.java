@@ -1,8 +1,10 @@
-package io.jari.dumpert;
+package io.jari.dumpert.fragments;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
+import io.jari.dumpert.activities.Main;
+import io.jari.dumpert.R;
 
 /**
  * JARI.IO

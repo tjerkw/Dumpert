@@ -1,4 +1,4 @@
-package io.jari.dumpert;
+package io.jari.dumpert.activities;
 
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -16,9 +16,15 @@ import android.view.View;
 import android.widget.FrameLayout;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.listeners.ActionClickListener;
+import io.jari.dumpert.NavigationItem;
+import io.jari.dumpert.R;
+import io.jari.dumpert.Utils;
+import io.jari.dumpert.adapters.CardAdapter;
+import io.jari.dumpert.adapters.NavigationAdapter;
 import io.jari.dumpert.animators.SlideInOutBottomItemAnimator;
 import io.jari.dumpert.api.API;
 import io.jari.dumpert.api.Item;
+import io.jari.dumpert.fragments.PreferencesFragment;
 
 import java.io.IOException;
 

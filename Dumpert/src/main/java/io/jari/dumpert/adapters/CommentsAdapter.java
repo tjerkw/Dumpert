@@ -1,4 +1,4 @@
-package io.jari.dumpert;
+package io.jari.dumpert.adapters;
 
 import android.app.Activity;
 import android.support.v7.widget.RecyclerView;
@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import io.jari.dumpert.R;
 import io.jari.dumpert.api.Comment;
 
 import java.util.ArrayList;

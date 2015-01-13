@@ -1,4 +1,4 @@
-package io.jari.dumpert;
+package io.jari.dumpert.activities;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -25,6 +25,11 @@ import android.widget.ProgressBar;
 import android.widget.VideoView;
 import com.nispok.snackbar.Snackbar;
 import com.squareup.picasso.Picasso;
+import io.jari.dumpert.AudioHandler;
+import io.jari.dumpert.FullscreenMediaController;
+import io.jari.dumpert.R;
+import io.jari.dumpert.Utils;
+import io.jari.dumpert.adapters.CommentsAdapter;
 import io.jari.dumpert.animators.SlideInOutBottomItemAnimator;
 import io.jari.dumpert.api.API;
 import io.jari.dumpert.api.Comment;

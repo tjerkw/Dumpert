@@ -1,4 +1,4 @@
-package io.jari.dumpert;
+package io.jari.dumpert.activities;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import com.nispok.snackbar.Snackbar;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
+import io.jari.dumpert.R;
 import org.apache.http.util.ByteArrayBuffer;
 import pl.droidsonroids.gif.GifDrawable;
 import pl.droidsonroids.gif.GifImageView;

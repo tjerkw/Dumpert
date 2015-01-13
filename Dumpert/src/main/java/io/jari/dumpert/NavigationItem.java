@@ -1,6 +1,7 @@
 package io.jari.dumpert;
 
 import android.graphics.drawable.Drawable;
+import io.jari.dumpert.activities.Main;
 
 /**
  * JARI.IO

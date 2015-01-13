@@ -1,4 +1,4 @@
-package io.jari.dumpert;
+package io.jari.dumpert.adapters;
 
 import android.app.Activity;
 import android.support.v7.widget.CardView;
@@ -11,6 +11,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.squareup.picasso.Picasso;
+import io.jari.dumpert.R;
+import io.jari.dumpert.activities.ViewItem;
 import io.jari.dumpert.api.Item;
 
 import java.util.ArrayList;
