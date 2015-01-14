@@ -27,6 +27,12 @@
             android:defaultValue="green"/>
 
         <CheckBoxPreference
+            android:key="dynamiccolors"
+            android:title="@string/dynamiccolors"
+            android:summary="@string/dynamiccolors_sum"
+            android:defaultValue="false"/>
+
+        <CheckBoxPreference
             android:key="nsfw"
             android:title="@string/nsfw"
             android:summary="@string/nsfw_sum"

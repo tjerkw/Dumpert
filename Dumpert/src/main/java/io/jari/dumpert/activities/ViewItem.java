@@ -268,20 +268,22 @@ public class ViewItem extends Base {
         Picasso.with(this).load(item.imageUrls == null ? null : item.imageUrls[0])
                 .into(itemImage, new Callback.EmptyCallback() {
                     @Override public void onSuccess() {
-                        Bitmap bitmap = ((BitmapDrawable) itemImage.getDrawable()).getBitmap();
-                        Palette.generateAsync(bitmap, new Palette.PaletteAsyncListener() {
-                            public void onGenerated(Palette palette) {
-                                Palette.Swatch swatch = palette.getVibrantSwatch();
-                                Palette.Swatch swatchDark = palette.getDarkVibrantSwatch();
-                                if (swatch != null) {
-                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-                                        getWindow().setStatusBarColor(swatchDark.getRgb());
-                                    getSupportActionBar()
-                                            .setBackgroundDrawable(new ColorDrawable(swatch.getRgb()));
+                        if(preferences.getBoolean("dynamiccolors", false)) {
+                            Bitmap bitmap = ((BitmapDrawable) itemImage.getDrawable()).getBitmap();
+                            Palette.generateAsync(bitmap, new Palette.PaletteAsyncListener() {
+                                public void onGenerated(Palette palette) {
+                                    Palette.Swatch swatch = palette.getVibrantSwatch();
+                                    Palette.Swatch swatchDark = palette.getDarkVibrantSwatch();
+                                    if (swatch != null) {
+                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+                                            getWindow().setStatusBarColor(swatchDark.getRgb());
+                                        getSupportActionBar()
+                                                .setBackgroundDrawable(new ColorDrawable(swatch.getRgb()));
 
+                                    }
                                 }
-                            }
-                        });
+                            });
+                        }
                     }
                 });
 

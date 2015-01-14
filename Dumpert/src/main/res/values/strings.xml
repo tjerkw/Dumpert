@@ -40,6 +40,8 @@
     <string name="video_quality">Video quality</string>
     <string name="nsfw">Show NSFW content</string>
     <string name="nsfw_sum">NSFW means \'Not Safe For Work\'</string>
+    <string name="dynamiccolors">Use dynamic colors</string>
+    <string name="dynamiccolors_sum">Adjust interface colors based on content.</string>
 
     <string-array name="quality_values">
         <item>hq</item>
