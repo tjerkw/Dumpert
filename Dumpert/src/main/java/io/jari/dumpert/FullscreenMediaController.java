@@ -9,9 +9,9 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.MediaController;
 
+
 /**
- * Custom MediaController that fixes issue with controls appearing offset on pre 4.3 devices
- * and shows how to add additional functionality such as fullscreen button
+ * Custom mediacontroller that adds a fullscreen button.
  */
 public class FullscreenMediaController extends MediaController {
 
@@ -37,17 +37,17 @@ public class FullscreenMediaController extends MediaController {
 
         FrameLayout.LayoutParams frameParams = new FrameLayout.LayoutParams(
                 LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-        frameParams.gravity = Gravity.RIGHT|Gravity.TOP;
+        frameParams.gravity = Gravity.RIGHT | Gravity.TOP;
 
 
         ImageButton fullscreenButton = (ImageButton) LayoutInflater.from(mContext)
-            .inflate(R.layout.fullscreen_button, null);
+                .inflate(R.layout.fullscreen_button, null);
 
         fullscreenButton.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
-            if(mListener != null) {
-                mListener.onRequestFullScreen();
-            }
+                if (mListener != null) {
+                    mListener.onRequestFullScreen();
+                }
             }
         });
 

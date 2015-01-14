@@ -1,9 +1,6 @@
 package io.jari.dumpert.adapters;
 
 import android.app.Activity;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.support.v7.graphics.Palette;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -13,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import io.jari.dumpert.R;
 import io.jari.dumpert.activities.ViewItem;
@@ -50,31 +46,17 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> {
         }
 
         public void update(Item item) {
-            final ImageView imageView = (ImageView)cardView.findViewById(R.id.card_image);
+            ImageView imageView = (ImageView)cardView.findViewById(R.id.card_image);
             ImageView type = (ImageView)cardView.findViewById(R.id.card_type);
-            final TextView title = (TextView)cardView.findViewById(R.id.card_title);
-            final TextView description = (TextView)cardView.findViewById(R.id.card_description);
+            TextView title = (TextView)cardView.findViewById(R.id.card_title);
+            TextView description = (TextView)cardView.findViewById(R.id.card_description);
             TextView stats = (TextView)cardView.findViewById(R.id.card_stats);
             TextView date = (TextView)cardView.findViewById(R.id.card_date);
 
             Picasso
                     .with(context)
                     .load(item.imageUrls == null ? null : item.imageUrls[0])
-                    .into(imageView, new Callback.EmptyCallback() {
-                        @Override public void onSuccess() {
-                            Bitmap bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
-                            Palette.generateAsync(bitmap, new Palette.PaletteAsyncListener() {
-                                public void onGenerated(Palette palette) {
-                                    Palette.Swatch swatch = palette.getVibrantSwatch();
-                                    if(swatch != null ){
-                                        cardView.setBackgroundColor(swatch.getRgb());
-                                        //title.setTextColor(swatch.getTitleTextColor());
-                                        description.setTextColor(swatch.getBodyTextColor());
-                                    }
-                                }
-                            });
-                        }
-                    });
+                    .into(imageView);
 
             if(item.photo) type.setImageResource(R.drawable.ic_photo);
             else if(item.video) type.setImageResource(R.drawable.ic_play_circle_fill);
@@ -92,6 +74,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> {
             } else {
                 imageView.setBackgroundColor(gray);
             }
+
             this.item = item;
         }
     }
