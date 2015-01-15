@@ -59,7 +59,7 @@ public class Image extends Base {
         super.onCreate(savedInstanceState);
 
         //wait until data has loaded
-        if(Build.VERSION.SDK_INT >= 21)
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
             this.postponeEnterTransition();
 
         setContentView(R.layout.image);
@@ -70,12 +70,6 @@ public class Image extends Base {
         ViewPager pager = (ViewPager)findViewById(R.id.viewpager);
         PagerAdapter pagerAdapter = new ImageAdapter(images);
         pager.setAdapter(pagerAdapter);
-
-
-//        ViewCompat.setTransitionName(pager, "image");
-
-
-//        new PhotoViewAttacher(imageView);
 
         this.tip();
     }

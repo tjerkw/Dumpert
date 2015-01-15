@@ -8,13 +8,14 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/Theme.Dumpert">
-        <activity android:name=".activities.ViewItem" android:configChanges="orientation"/>
+        <activity android:name=".activities.ViewItem"/>
         <activity android:name=".activities.Image" android:theme="@style/Theme.Dumpert.NoActionBar"/>
+        <activity android:name=".activities.Video" android:screenOrientation="landscape" android:theme="@style/Theme.Dumpert.Fullscreen"/>
         <activity android:name=".activities.About" android:theme="@style/Theme.Dumpert.About"/>
         <activity
             android:name=".activities.Main"
             android:label="@string/app_name">
-            <intent-filter >
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
