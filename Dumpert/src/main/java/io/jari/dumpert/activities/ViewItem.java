@@ -144,7 +144,7 @@ public class ViewItem extends Base {
 
     @Override
     protected void onPause() {
-        if(item == null || (!item.video && !item.audio)) {
+        if(!preferences.getBoolean("autoplay_vids", true) || item == null || (!item.video && !item.audio)) {
             super.onPause();
             return;
         }
@@ -166,7 +166,7 @@ public class ViewItem extends Base {
 
     @Override
     protected void onResume() {
-        if(itemInfo != null && (item != null) && (item.video || item.audio)) {
+        if(preferences.getBoolean("autoplay_vids", true) && itemInfo != null && (item != null) && (item.video || item.audio)) {
             if(item.video) {
                 //when we return to the activity, restart the video
                 startMedia(itemInfo, item);
@@ -267,8 +267,9 @@ public class ViewItem extends Base {
         item = (Item)getIntent().getSerializableExtra("item");
         Picasso.with(this).load(item.imageUrls == null ? null : item.imageUrls[0])
                 .into(itemImage, new Callback.EmptyCallback() {
-                    @Override public void onSuccess() {
-                        if(preferences.getBoolean("dynamiccolors", false)) {
+                    @Override
+                    public void onSuccess() {
+                        if (preferences.getBoolean("dynamiccolors", false)) {
                             Bitmap bitmap = ((BitmapDrawable) itemImage.getDrawable()).getBitmap();
                             Palette.generateAsync(bitmap, new Palette.PaletteAsyncListener() {
                                 public void onGenerated(Palette palette) {

@@ -146,7 +146,8 @@ public class API {
         for(Element element : elements) {
             Comment comment = new Comment();
             comment.id = element.attr("id").substring(1);
-            comment.content = element.select("p").first().html().replace("\\\"", "\"").replace("\\'", "'").replace("\\&quot;", "");
+            Element p = element.select("p").first();
+            comment.content = p != null ? p.html().replace("\\\"", "\"").replace("\\'", "'").replace("\\&quot;", "") : "";
             String footer = element.select("footer").first().text();
             StringTokenizer tokenizer = new StringTokenizer(footer, "|");
             comment.author = tokenizer.nextToken().trim();
