@@ -7,7 +7,7 @@ import android.support.v7.app.ActionBarActivity;
 import io.jari.dumpert.R;
 
 
-public class Base extends ActionBarActivity{
+public class BaseActivity extends ActionBarActivity{
     public SharedPreferences preferences;
     public boolean dontApplyTheme = false;
 

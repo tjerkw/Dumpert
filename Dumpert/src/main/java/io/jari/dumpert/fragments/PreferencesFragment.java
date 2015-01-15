@@ -3,7 +3,7 @@ package io.jari.dumpert.fragments;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
-import io.jari.dumpert.activities.Main;
+import io.jari.dumpert.activities.MainActivity;
 import io.jari.dumpert.R;
 
 /**
@@ -23,8 +23,8 @@ public class PreferencesFragment extends PreferenceFragment {
             @Override
             public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
                 if (key.equals("theme")) {
-                    Main main = (Main) getActivity();
-                    main.preferences.edit().putBoolean("switchtosettings", true).commit();
+                    MainActivity main = (MainActivity) getActivity();
+//                    main.preferences.edit().putBoolean("switchtosettings", true).commit();
                     main.finish();
                     startActivity(main.getIntent());
                     main.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);

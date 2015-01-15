@@ -52,7 +52,7 @@ import java.util.regex.Pattern;
  * Date: 12-12-14
  * Time: 14:50
  */
-public class ViewItem extends Base {
+public class ViewItemActivity extends BaseActivity {
 
     Item item;
     ItemInfo itemInfo;
@@ -193,7 +193,7 @@ public class ViewItem extends Base {
             mediaController.setListener(new FullscreenMediaController.OnMediaControllerInteractionListener() {
                 @Override
                 public void onRequestFullScreen() {
-                    Video.launch(ViewItem.this, itemInfo.media);
+                    VideoActivity.launch(ViewItemActivity.this, itemInfo.media);
                 }
             });
 
@@ -218,10 +218,10 @@ public class ViewItem extends Base {
                     findViewById(R.id.item_type).setVisibility(View.VISIBLE);
                     videoViewFrame.setAlpha(0f);
 
-                    Snackbar.with(ViewItem.this)
+                    Snackbar.with(ViewItemActivity.this)
                             .text(R.string.video_failed)
                             .textColor(Color.parseColor("#FFCDD2"))
-                            .show(ViewItem.this);
+                            .show(ViewItemActivity.this);
 
                     return true;
                 }
@@ -249,13 +249,13 @@ public class ViewItem extends Base {
                                 videoViewFrame.setAlpha(1f);
                             }
                         };
-                        audioHandler.playAudio(itemInfo.media, ViewItem.this, master);
+                        audioHandler.playAudio(itemInfo.media, ViewItemActivity.this, master);
                     } catch(Exception e) {
                         e.printStackTrace();
-                        Snackbar.with(ViewItem.this)
+                        Snackbar.with(ViewItemActivity.this)
                                 .text(R.string.audio_failed)
                                 .textColor(Color.parseColor("#FFCDD2"))
-                                .show(ViewItem.this);
+                                .show(ViewItemActivity.this);
                     }
                 }
             }).start();
@@ -321,17 +321,17 @@ public class ViewItem extends Base {
                 public void run() {
                     boolean error = false;
                     try {
-                        if(!Utils.isOffline(ViewItem.this))
-                            itemInfo = API.getItemInfo(item, ViewItem.this);
+                        if(!Utils.isOffline(ViewItemActivity.this))
+                            itemInfo = API.getItemInfo(item, ViewItemActivity.this);
                     } catch (Exception e) {
                         error = true;
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                Snackbar.with(ViewItem.this)
+                                Snackbar.with(ViewItemActivity.this)
                                         .text(R.string.video_failed)
                                         .textColor(Color.parseColor("#FFCDD2"))
-                                        .show(ViewItem.this);
+                                        .show(ViewItemActivity.this);
                             }
                         });
                     }
@@ -340,7 +340,7 @@ public class ViewItem extends Base {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            if (!err && !Utils.isOffline(ViewItem.this) && preferences.getBoolean("autoplay_vids", true)) {
+                            if (!err && !Utils.isOffline(ViewItemActivity.this) && preferences.getBoolean("autoplay_vids", true)) {
                                 startMedia(itemInfo, item);
                             } else {
                                 progressBar.setVisibility(View.GONE);
@@ -359,7 +359,7 @@ public class ViewItem extends Base {
             @Override
             public void onClick(View v) {
                 if(item.photo)
-                    Image.launch(ViewItem.this, itemImage, item.imageUrls);
+                    ImageActivity.launch(ViewItemActivity.this, itemImage, item.imageUrls);
                 else if(item.video && itemInfo != null && progressBar.getVisibility() != View.VISIBLE) {
                     startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(itemInfo.media)));
                 }
@@ -383,7 +383,7 @@ public class ViewItem extends Base {
             @Override
             public void run() {
                 try {
-                    final Comment[] commentsData = API.getComments(id, ViewItem.this);
+                    final Comment[] commentsData = API.getComments(id, ViewItemActivity.this);
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -400,10 +400,10 @@ public class ViewItem extends Base {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Snackbar.with(ViewItem.this)
+                            Snackbar.with(ViewItemActivity.this)
                                     .text(R.string.comments_failed)
                                     .textColor(Color.parseColor("#FFCDD2"))
-                                    .show(ViewItem.this);
+                                    .show(ViewItemActivity.this);
                         }
                     });
                 }
@@ -428,7 +428,7 @@ public class ViewItem extends Base {
 
     public static void launch(Activity activity, View transitionView, Item item) {
         ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(activity, transitionView, "item");
-        Intent intent = new Intent(activity, ViewItem.class);
+        Intent intent = new Intent(activity, ViewItemActivity.class);
         intent.putExtra("item", item);
         ActivityCompat.startActivity(activity, intent, options.toBundle());
 

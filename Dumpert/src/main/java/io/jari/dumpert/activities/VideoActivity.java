@@ -19,7 +19,7 @@ import io.jari.dumpert.R;
  * Date: 15-1-15
  * Time: 10:27
  */
-public class Video extends Base {
+public class VideoActivity extends BaseActivity {
     void setTheme() {
         //no themes used in this activity
     }
@@ -96,10 +96,10 @@ public class Video extends Base {
             public boolean onError(MediaPlayer mp, int what, int extra) {
                 findViewById(R.id.loading).setVisibility(View.GONE);
 
-                Snackbar.with(Video.this)
+                Snackbar.with(VideoActivity.this)
                         .text(R.string.video_failed)
                         .textColor(Color.parseColor("#FFCDD2"))
-                        .show(Video.this);
+                        .show(VideoActivity.this);
 
                 return true;
             }
@@ -110,7 +110,7 @@ public class Video extends Base {
     }
 
     public static void launch(Activity activity, String url) {
-        Intent intent = new Intent(activity, Video.class);
+        Intent intent = new Intent(activity, VideoActivity.class);
         intent.putExtra("url", url);
         activity.startActivity(intent);
     }

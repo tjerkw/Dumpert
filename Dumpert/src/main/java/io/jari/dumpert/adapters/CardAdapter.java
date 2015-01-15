@@ -12,7 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import io.jari.dumpert.R;
-import io.jari.dumpert.activities.ViewItem;
+import io.jari.dumpert.activities.ViewItemActivity;
 import io.jari.dumpert.api.Item;
 
 import java.util.ArrayList;
@@ -40,7 +40,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> {
             v.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ViewItem.launch(ViewHolder.this.context, cardView.findViewById(R.id.card_image), item);
+                    ViewItemActivity.launch(ViewHolder.this.context, cardView.findViewById(R.id.card_image), item);
                 }
             });
         }

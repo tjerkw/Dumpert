@@ -33,7 +33,7 @@ import java.net.URLConnection;
  * Date: 12-12-14
  * Time: 14:50
  */
-public class Image extends Base {
+public class ImageActivity extends BaseActivity {
 
     void setTheme() {
         String theme = preferences.getString("theme", "green");
@@ -109,7 +109,7 @@ public class Image extends Base {
 
     public static void launch(Activity activity, View transitionView, String[] images) {
         ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(activity, transitionView, "image");
-        Intent intent = new Intent(activity, Image.class);
+        Intent intent = new Intent(activity, ImageActivity.class);
         intent.putExtra("images", images);
         ActivityCompat.startActivity(activity, intent, options.toBundle());
     }
@@ -128,7 +128,7 @@ public class Image extends Base {
 
         @Override
         public View instantiateItem(ViewGroup container, int position) {
-             final View view = LayoutInflater.from(Image.this)
+             final View view = LayoutInflater.from(ImageActivity.this)
                     .inflate(R.layout.image_image, container, false);
             final GifImageView imageView = (GifImageView)view.findViewById(R.id.image_image);
 
@@ -139,7 +139,7 @@ public class Image extends Base {
             final String image = urls[position];
 
             Picasso
-                    .with(Image.this)
+                    .with(ImageActivity.this)
                     .load(image)
                     .into(imageView, new Callback() {
                         @Override
@@ -172,10 +172,10 @@ public class Image extends Base {
                                             });
                                         } catch (Exception e) {
                                             e.printStackTrace();
-                                            Snackbar.with(Image.this)
+                                            Snackbar.with(ImageActivity.this)
                                                     .text(R.string.gif_failed)
                                                     .textColor(Color.parseColor("#FFCDD2"))
-                                                    .show(Image.this);
+                                                    .show(ImageActivity.this);
                                         }
                                         finally {
                                             runOnUiThread(new Runnable() {

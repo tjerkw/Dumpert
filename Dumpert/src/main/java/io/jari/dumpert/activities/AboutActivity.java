@@ -11,7 +11,7 @@ import io.jari.dumpert.R;
  * Date: 23-12-14
  * Time: 0:33
  */
-public class About extends Base {
+public class AboutActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         dontApplyTheme = true;
