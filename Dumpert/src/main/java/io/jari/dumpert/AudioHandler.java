@@ -102,16 +102,14 @@ public class AudioHandler implements MediaPlayer.OnBufferingUpdateListener, Medi
 
     @Override
     public int getAudioSessionId() {
-        return 1; //who the fuck cares nigga
+        return 1;
     }
 
     @Override
     public void onBufferingUpdate(MediaPlayer mp, int percent) {
-        //??
     }
 
     @Override
     public void onCompletion(MediaPlayer mp) {
-        //??? w/e?
     }
 }

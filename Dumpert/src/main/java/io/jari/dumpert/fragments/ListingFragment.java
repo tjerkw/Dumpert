@@ -26,8 +26,6 @@ import io.jari.dumpert.animators.SlideInOutBottomItemAnimator;
 import io.jari.dumpert.api.API;
 import io.jari.dumpert.api.Item;
 
-import java.io.IOException;
-
 /**
  * JARI.IO
  * Date: 15-1-15
@@ -57,6 +55,7 @@ public class ListingFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         currentPath = getCurrentPath();
         preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        //use activity inflater rather than our own inflator due to android supportv4 bug
         main = inflater.inflate(R.layout.main, container, false);
         
         swipeRefreshLayout = (SwipeRefreshLayout) main.findViewById(R.id.swiperefresh);
@@ -134,7 +133,9 @@ public class ListingFragment extends Fragment {
 
             offlineSnackbar.show(getActivity());
         } else {
-            ((ActionBarActivity)getActivity()).getSupportActionBar().setSubtitle("");
+            if(((ActionBarActivity)getActivity()).getSupportActionBar().getSubtitle() == getResources().getString(R.string.cached_version)) {
+                ((ActionBarActivity)getActivity()).getSupportActionBar().setSubtitle("");
+            }
             if (offlineSnackDismissed) return;
 
             if (offlineSnackbar != null && offlineSnackbar.isShowing()) offlineSnackbar.dismiss();
@@ -165,19 +166,24 @@ public class ListingFragment extends Fragment {
                         }
                     });
 
-                } catch (IOException e) {
+                } catch (Exception e) {
                     errorSnack(e);
                     e.printStackTrace();
                 }
                 finally {
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (refresh)
-                                swipeRefreshLayout.setRefreshing(false);
-                            else dismissLoader();
-                        }
-                    });
+                    try {
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (refresh)
+                                    swipeRefreshLayout.setRefreshing(false);
+                                else dismissLoader();
+                            }
+                        });
+                    }
+                    catch(Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }).start();
@@ -238,7 +244,7 @@ public class ListingFragment extends Fragment {
                             cardAdapter.addItems(items);
                         }
                     });
-                } catch (IOException e) {
+                } catch (Exception e) {
                     ListingFragment.this.page--;
                     errorSnack(e);
                     e.printStackTrace();

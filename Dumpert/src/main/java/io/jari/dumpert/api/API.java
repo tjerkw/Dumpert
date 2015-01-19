@@ -7,6 +7,7 @@ import android.util.Base64;
 import android.util.Log;
 import io.jari.dumpert.Utils;
 import io.jari.dumpert.thirdparty.SerializeObject;
+import io.jari.dumpert.thirdparty.TimeAgo;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpGet;
@@ -22,7 +23,11 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -49,7 +54,7 @@ public class API {
      * getListing fetches a listing of items and parses them into a Item array.
      * Returns cache if in offline mode.
      */
-    public static Item[] getListing(Integer page, Context context, String path) throws IOException {
+    public static Item[] getListing(Integer page, Context context, String path) throws IOException, ParseException {
         String cacheKey = "frontpage_"+page+"_"+path.replace("/", "");
         if(Utils.isOffline(context)) {
             Object cacheObj = API.getFromCache(context, cacheKey);
@@ -74,7 +79,9 @@ public class API {
             Log.d(TAG, "Parsing '"+item.url+"'");
             item.description = element.select("p.description").first().html();
             item.thumbUrl = element.select("img").first().attr("src");
-            item.date = element.select("date").first().text();
+            String rawDate = element.select("date").first().text();
+            Date date = new SimpleDateFormat("dd MMMM yyyy kk:ss", Locale.forLanguageTag("nl-NL")).parse(rawDate);
+            item.date = new TimeAgo(context).timeAgo(date);
             item.stats = element.select("p.stats").first().text();
             item.photo = element.select(".foto").size() > 0;
             item.video = element.select(".video").size() > 0;
@@ -107,7 +114,7 @@ public class API {
         return returnList;
     }
 
-    public static Item[] getListing(Context context, String path) throws IOException {
+    public static Item[] getListing(Context context, String path) throws IOException, ParseException {
         return API.getListing(0, context, path);
     }
 
