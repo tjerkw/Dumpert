@@ -78,9 +78,10 @@ public class API {
             item.title = element.select("h1").first().text();
             Log.d(TAG, "Parsing '"+item.url+"'");
             item.description = element.select("p.description").first().html();
+
             item.thumbUrl = element.select("img").first().attr("src");
             String rawDate = element.select("date").first().text();
-            Date date = new SimpleDateFormat("dd MMMM yyyy kk:ss", Locale.forLanguageTag("nl-NL")).parse(rawDate);
+            Date date = new SimpleDateFormat("dd MMMM yyyy kk:ss", new Locale("nl", "NL")).parse(rawDate);
             item.date = new TimeAgo(context).timeAgo(date);
             item.stats = element.select("p.stats").first().text();
             item.photo = element.select(".foto").size() > 0;
