@@ -113,6 +113,8 @@ public class ListingFragment extends Fragment {
     boolean offlineSnackDismissed = false;
 
     public void offlineSnack() {
+        if(getActivity() == null) return;
+
         if (Utils.isOffline(getActivity())) {
             ((ActionBarActivity)getActivity()).getSupportActionBar().setSubtitle(R.string.cached_version);
             if (offlineSnackDismissed) return;
@@ -200,6 +202,8 @@ public class ListingFragment extends Fragment {
     }
 
     public void errorSnack(final Exception e) {
+        if(getActivity() == null) return;
+
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
