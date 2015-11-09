@@ -169,6 +169,10 @@ public class API {
         ArrayList<Comment>newComments = new ArrayList<Comment>();
         if(modlinksMatcher.find()) {
             String modlinksUrl = modlinksMatcher.group(1);
+            // to prevent crash when giving invalid urls to HttpGet
+            if (!modLinksUrl.startswith("http") {
+                modLinksUrl = "http://" + modLinksUrl;
+            }
             httpget = new HttpGet(modlinksUrl);
             String modlinksFile = httpclient.execute(httpget, responseHandler);
 
