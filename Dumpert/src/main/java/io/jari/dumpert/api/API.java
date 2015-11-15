@@ -169,6 +169,9 @@ public class API {
         ArrayList<Comment>newComments = new ArrayList<Comment>();
         if(modlinksMatcher.find()) {
             String modlinksUrl = modlinksMatcher.group(1);
+            if (modlinksUrl.indexOf("//")==0) {
+                modlinksUrl = "http:" + modlinksUrl;
+            }
             httpget = new HttpGet(modlinksUrl);
             String modlinksFile = httpclient.execute(httpget, responseHandler);
 
